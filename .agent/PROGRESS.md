@@ -8,10 +8,10 @@
 ## Now
 | | |
 |---|---|
-| **Phase** | Planned, ready to build |
-| **Next task** | V0 Preflight |
+| **Phase** | Course workspaces (V7+) in progress |
+| **Next task** | V11 instructions panel, V13 YouTube finder (agy running), then V14, V15 |
 | **Blocked on** | — |
-| **Last updated** | 2026-11-14 by Claude (planning) |
+| **Last updated** | 2026-11-14 by Claude (orchestrating agy) |
 
 ## Human steps
 Things only Rony can do. Agents add to this list; Rony ticks them.
@@ -48,6 +48,10 @@ Things only Rony can do. Agents add to this list; Rony ticks them.
 ## Decisions made during the build
 Agents append one line per choice the docs didn't cover (newest last). If it changes a doc, update the doc too.
 - 2026-11-14: Planning. See `AGENTS.md` fork block, "Key decisions".
+- 2026-11-14: Course workspaces: exam groups are plain folders `exams/<slug>/EXAM.md` in the course workspace (no DB), so the existing workspace tools see them. Recorded in 10.
+- 2026-11-14: No custom checklist card: `ask_user` (4×8 multi-select) is enough for a CT prerequisite list; checked live.
+- 2026-11-14: Uploads keep only the file name of the client path (`../../x` → `x`); a bad `folder` is still rejected.
+- 2026-11-14: Builds run `agy -p … --mode auto --sandbox` (accept-edits denies shell commands and ends the print turn). Claude-model quota ran out after one run; Gemini 3.8 Flash High used after that. agy print runs often hang or lose the stream on this network, so a watchdog runner restarts/resumes them.
 
 ## Session log
 Newest at the bottom. One entry per task. Keep entries short.
@@ -64,3 +68,9 @@ Next: …
 ### 2026-11-14 — Claude (planning) — planning
 Did: cloned HKUDS/DeepTutor (remote `upstream`), ran the `agy acp` spike (handshake, model switch, 3-turn context, streaming, token use, saved conversations), wrote the fork block in `AGENTS.md`, `CLAUDE.md`, `FORK_NOTICE.md` and the `.agent/` pack. Nothing committed.
 Next: Rony runs `/project-config`, then the goal. Antigravity starts at V0.
+
+### 2026-11-14 — Claude (orchestrator) + agy — V7–V10, V12
+Did: plan (10-COURSE-WORKSPACES, V7–V15). V7 exam-groups backend + `/api/courses`; V8 exam-prep skill + `exam_groups` tool; V9 note folder tree tools; V10 Courses page; V12 course instructions in quiz/research prompts. Review fixes: exam-group id confinement (`..` could reach the workspace root), upload read cap, unrelated CitationManager change removed, sidebar link moved to the rendered shelf.
+Tests: tests/fork 98 ✅, notes/co_writer/capabilities/tools/question/research suites ✅, tsc ✅, eslint 0 errors (i18n warnings). tests/modules failures are environmental (app running / WinError 87).
+Live: Courses page, group create/topics/upload/tree in the browser ✅; chat "I have ZZ Test group…" → read_skill exam-prep → exam_groups → workspace_read → ask_user prerequisite checklist ✅.
+Problems: "Study for this exam" prefill is lost in dev mode (React StrictMode double effect, same for upstream's Settings hand-off); check in the production build.
