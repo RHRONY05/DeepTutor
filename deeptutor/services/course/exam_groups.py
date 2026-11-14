@@ -85,7 +85,7 @@ def _group_dir(root: Path, slug: str) -> Path:
         not slug
         or slug in {".", ".."}
         or slug.startswith(".")
-        or any(ch in slug for ch in '/\:*?"<>|')
+        or any(ch in slug for ch in '/\\:*?"<>|')
         or Path(slug).stem.upper() in _WINDOWS_RESERVED
     ):
         raise ExamGroupError(f"Invalid exam group id {slug!r}.")
