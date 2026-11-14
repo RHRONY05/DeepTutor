@@ -26,9 +26,36 @@ logger = logging.getLogger(__name__)
 def _binding(kwargs: dict[str, Any]):
     service = get_content_workspace_service()
     workspace_id = str(kwargs.get("_workspace_id") or "")
+    if not workspace_id:
+        # The request's course scope (?dt_workspace=), not the globally active one.
+        from deeptutor.services.workspace.context import current_workspace_id
+
+        workspace_id = current_workspace_id() or ""
     return service, (
         service.binding_by_id(workspace_id) if workspace_id else service.current_binding()
     )
+
+
+_TAGGING_ACTIONS = {"get", "create", "update", "update_topics"}
+
+
+async def _tag_session(kwargs: dict[str, Any], action: str, result: ToolResult) -> None:
+    """File the conversation under the exam group it is working on (sidebar grouping)."""
+    session_id = str(kwargs.get("_session_id") or "")
+    meta = result.metadata if isinstance(result.metadata, dict) else {}
+    slug = str(meta.get("slug") or "")
+    if not session_id or not slug or not result.success or action not in _TAGGING_ACTIONS:
+        return
+    try:
+        from deeptutor.services.session import get_session_store
+
+        await get_session_store().update_session_preferences(
+            session_id,
+            {"exam_group": slug, "exam_group_name": str(meta.get("name") or slug)},
+            touch=False,
+        )
+    except Exception:
+        logger.debug("could not tag session %s with exam group %s", session_id, slug, exc_info=True)
 
 
 def _relativize_tree(nodes: list[dict[str, Any]], prefix: str) -> list[dict[str, Any]]:
@@ -145,7 +172,9 @@ class ExamGroupsTool(BaseTool):
             )
 
         try:
-            return await asyncio.to_thread(self._run_action, root, action, kwargs)
+            result = await asyncio.to_thread(self._run_action, root, action, kwargs)
+            await _tag_session(kwargs, action, result)
+            return result
         except ExamGroupError as exc:
             return ToolResult(content=f"Exam group error: {exc}", success=False, metadata={"error": str(exc)})
         except WorkspaceError as exc:

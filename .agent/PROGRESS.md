@@ -11,7 +11,7 @@
 | **Phase** | Course workspaces built (V7–V13, V15); V14 deferred |
 | **Next task** | — (open: per-course memory V14, Courses UI i18n, YouTube duration) |
 | **Blocked on** | — |
-| **Last updated** | 2026-11-15 by Claude (V15 final check) |
+| **Last updated** | 2026-11-15 by Claude (exam-group scope fix, sidebar groups) |
 
 ## Human steps
 Things only Rony can do. Agents add to this list; Rony ticks them.
@@ -87,3 +87,11 @@ Did: reviewed/committed V11 (instructions panel, default persona) and V13 (`yout
 Tests: 3278 passed / 3 failed in tests/fork, co_writer, notes, tools, capabilities, agents, services/llm, services/session, api/test_tools_router — the 3 failures are unrelated (tex NTFS case, math_animator repair assertion, sqlite Windows file lock). tsc ✅.
 Left running: DeepTutor in production, detached (`deeptutor stop --home "D:\Projects\DeepTutor"` to stop, or the desktop shortcut as usual afterwards).
 Open: V14 per-course memory (deferred), Courses UI i18n, YouTube duration often "Unknown", a stray agy.exe from an early V8 run may still be idle (end it in Task Manager).
+
+### 2026-11-15 — Claude — exam-group scope fix + sidebar groups
+- Bug: `exam_groups` got no course id (the runtime only passed it to `workspace_*` tools), so it read the
+  account-wide `data/user/workspace/exams/` and a chat about Ai_quiz was answered from a stray CT-04 copy.
+  Fix: `tool_runtime.py` passes `_workspace_id` + `_session_id`; the tool also falls back to the request scope.
+  Stray folder moved out; its topic list merged into the real CT-04.
+- The tool tags the chat (`exam_group`, `exam_group_name` session preferences); the sidebar lists tagged chats
+  under the group's name. Instructions panel: persona select and header actions no longer overflow.

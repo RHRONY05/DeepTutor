@@ -1,4 +1,5 @@
 "use client";
+// Modified in the RH.RONY fork (Apache-2.0 §4b): group sidebar chats by course exam group
 
 import Tooltip from "@/shared/ui/Tooltip";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -673,12 +674,59 @@ export default function OrganizedSessionList({
     const found = roots.filter((row) =>
       matches(displaySessionTitle(row.title, placeholderLabel), timeline.query),
     );
+    // fork(course_workspaces) start
+    // Conversations about a course exam group are listed under that group.
+    const examSections = new Map<string, { label: string; rows: SessionSummary[] }>();
+    for (const row of found) {
+      const slug = row.preferences?.exam_group;
+      if (!slug || row.preferences?.pinned) continue;
+      const key = `exam:${sessionWorkspaceId(row)}:${slug}`;
+      const section = examSections.get(key) ?? {
+        label: row.preferences?.exam_group_name || slug,
+        rows: [],
+      };
+      section.rows.push(row);
+      examSections.set(key, section);
+    }
+    const examOrder = [...examSections.entries()]
+      .map(([key, section]) => {
+        section.rows.sort((a, b) => time(b) - time(a));
+        return [key, section] as const;
+      })
+      .sort(([, a], [, b]) => time(b.rows[0]) - time(a.rows[0]));
+    // fork(course_workspaces) end
     return (
       <div className="py-0.5">
         {workspaceMoveError && <p role="alert" className="px-2 py-1 text-xs text-[var(--destructive)]">{workspaceMoveError}</p>}
+        {/* fork(course_workspaces) start */}
+        {examOrder.map(([key, section]) => {
+          const collapsed = collapsedGroups.has(key);
+          return (
+            <section className="dt-record-group" key={key}>
+              <h2>
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(key)}
+                  aria-expanded={!collapsed}
+                  className="inline-flex max-w-full items-center gap-1 truncate hover:text-[var(--foreground)]"
+                  title={section.label}
+                >
+                  {collapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
+                  <span className="truncate">{section.label}</span>
+                  <span className="opacity-60">{section.rows.length}</span>
+                </button>
+              </h2>
+              {!collapsed && section.rows.map((row) => renderRow(row))}
+            </section>
+          );
+        })}
+        {/* fork(course_workspaces) end */}
         <RecordGroups
           rows={found
             .filter((row) => !row.preferences?.pinned)
+            // fork(course_workspaces) start
+            .filter((row) => !row.preferences?.exam_group)
+            // fork(course_workspaces) end
             .sort((a, b) => time(b) - time(a))}
           lead={{
             label: t("navigation.pinned"),

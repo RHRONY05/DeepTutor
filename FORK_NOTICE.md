@@ -67,6 +67,8 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `deeptutor/tools/builtin/__init__.py`, `deeptutor/tools/__init__.py`, `deeptutor/i18n/metadata_i18n.py`, `deeptutor/services/config/readiness.py` | modified | `youtube_find` is a user-toggleable built-in tool |
 | `web/features/capabilities/presentation.tsx`, `web/locales/{en,zh}/app.json` | modified | "YouTube Finder" in the tool picker (JSON locales carry no comment marker) |
 | `tests/api/test_tools_router.py` | modified | Toggleable tool list includes `youtube_find` |
+| `deeptutor/agents/_shared/tool_runtime.py` | modified | Passes the chat's course id and session id to `exam_groups` |
+| `web/components/sessions/OrganizedSessionList.tsx`, `web/lib/session-api.ts` | modified | Sidebar lists course chats under their exam group |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings

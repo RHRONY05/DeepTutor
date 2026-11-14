@@ -108,4 +108,5 @@ Default persona applies when a chat in that workspace has no persona chosen.
 - Course instructions reach quiz generation (explore, plan, quiz step) and Deep Research (decompose, research blocks, report outline/intro/sections/conclusion) via `deeptutor/services/course/instructions.py`.
 - `youtube_find` (`deeptutor/tools/youtube_find.py`): user-toggleable; web search → YouTube candidates → captions via `resolve_youtube_captions` → keyword/timestamp scoring, educator bonus, shorts penalty; unverified videos listed separately.
 - Sidebar: Courses link in `CategoryNavigation.tsx` + `page-sections.ts` (`nav-entries.ts` keeps the policy entry).
+- Sidebar: chats that used `exam_groups` get/create/update carry `exam_group`/`exam_group_name` session preferences and are listed under that group (`OrganizedSessionList.tsx`). The runtime passes `exam_groups` the course id and session id (`tool_runtime.py`).
 - V14 per-course memory: deferred (see 08).

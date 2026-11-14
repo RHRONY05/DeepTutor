@@ -335,11 +335,11 @@ export function CourseInstructionsPanel({
       {/* ─────────────────────────────────────────────────────────────
           CARD A: Persona
       ───────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
+      <div className="flex min-w-0 flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between border-b border-[var(--border)]/70 pb-3">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--primary)]">
+          <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-[var(--border)]/70 pb-3">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--primary)]">
                 <User size={16} />
               </span>
               <div>
@@ -353,7 +353,7 @@ export function CourseInstructionsPanel({
             </div>
             <Link
               href="/space/personas"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--primary)] hover:underline"
+              className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[11px] font-medium text-[var(--primary)] hover:underline"
             >
               Manage personas
               <ExternalLink size={11} />
@@ -380,7 +380,7 @@ export function CourseInstructionsPanel({
                 id="course-default-persona-select"
                 value={selectedPersona}
                 onChange={(e) => handleSelectPersona(e.target.value)}
-                className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
+                className="min-w-0 flex-1 truncate rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
               >
                 <option value="">None (DeepTutor default)</option>
                 {personas.map((p) => (
@@ -406,7 +406,7 @@ export function CourseInstructionsPanel({
                     <Save size={13} />
                   )
                 }
-                className="shrink-0 text-xs"
+                className="shrink-0 whitespace-nowrap text-xs"
               >
                 {isDefaultPersonaDirty ? "Set default" : "Default set"}
               </Button>
@@ -489,11 +489,11 @@ export function CourseInstructionsPanel({
       {/* ─────────────────────────────────────────────────────────────
           CARD B: Course Instructions
       ───────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
+      <div className="flex min-w-0 flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between border-b border-[var(--border)]/70 pb-3">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--primary)]">
+          <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-[var(--border)]/70 pb-3">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--primary)]">
                 <FileText size={16} />
               </span>
               <div>
@@ -511,7 +511,7 @@ export function CourseInstructionsPanel({
               size="sm"
               icon={<Sparkles size={12} className="text-amber-500" />}
               onClick={handleInsertExamPrepDefaults}
-              className="text-[11px] text-[var(--primary)]"
+              className="shrink-0 whitespace-nowrap text-[11px] text-[var(--primary)]"
               title="Append exam-prep instructions template"
             >
               Insert exam-prep defaults
@@ -575,11 +575,11 @@ export function CourseInstructionsPanel({
       {/* ─────────────────────────────────────────────────────────────
           CARD C: Exam-prep Skill
       ───────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
+      <div className="flex min-w-0 flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between border-b border-[var(--border)]/70 pb-3">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--primary)]">
+          <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-[var(--border)]/70 pb-3">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--primary)]">
                 <GraduationCap size={16} />
               </span>
               <div>
@@ -592,7 +592,7 @@ export function CourseInstructionsPanel({
               </div>
             </div>
             <span
-              className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium ${
+              className={`shrink-0 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-medium ${
                 isSkillReadOnly
                   ? "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300"
                   : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
@@ -685,11 +685,11 @@ export function CourseInstructionsPanel({
       {/* ─────────────────────────────────────────────────────────────
           CARD D: Built-in Base Prompt
       ───────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
+      <div className="flex min-w-0 flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between border-b border-[var(--border)]/70 pb-3">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--muted-foreground)]">
+          <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-[var(--border)]/70 pb-3">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--muted-foreground)]">
                 <FileCode size={16} />
               </span>
               <div>

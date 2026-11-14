@@ -1,3 +1,4 @@
+// Modified in the RH.RONY fork (Apache-2.0 §4b): exam_group session preference
 import { clearFailedSubmission } from "@/lib/failed-submissions";
 import { scopedUrl } from "@/lib/workspace-scope";
 import { notifySessionsChanged } from "@/lib/session-events";
@@ -112,6 +113,11 @@ export interface SessionPreferences {
   create_target?: string;
   /** Session-level persona preference; "" / absent = Default (no persona). */
   persona?: string;
+  // fork(course_workspaces) start
+  /** Course exam group this conversation works on (set by the exam_groups tool). */
+  exam_group?: string;
+  exam_group_name?: string;
+  // fork(course_workspaces) end
   /** Who the conversation is handed to — `partner:<id>` / `subagent:<name>`;
    *  "" / absent when DeepTutor answers. Rewritten with every turn. */
   answer_by?: string;
