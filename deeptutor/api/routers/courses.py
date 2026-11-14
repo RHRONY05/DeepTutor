@@ -21,16 +21,21 @@ DELETE /api/courses/{workspace_id}/groups/{slug}/files?path=...
 
 GET /api/courses/{workspace_id}/settings
 PUT /api/courses/{workspace_id}/settings
+
+GET /api/courses/{workspace_id}/instructions
 """
 
 from __future__ import annotations
 
 import asyncio
 from datetime import date as _date
+import functools
 import logging
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
+import yaml
 
 from deeptutor.services.course.exam_groups import (
     MAX_UPLOAD_BYTES,
@@ -46,6 +51,7 @@ from deeptutor.services.course.exam_groups import (
 )
 from deeptutor.services.course.settings import get_course_settings, set_course_settings
 from deeptutor.services.workspace import WorkspaceError, get_content_workspace_service
+from deeptutor.services.workspace.models import MAX_WORKSPACE_INSTRUCTIONS_CHARS
 
 logger = logging.getLogger(__name__)
 
@@ -283,3 +289,60 @@ async def put_workspace_course_settings(workspace_id: str, payload: dict) -> dic
     default_persona = str(payload.get("default_persona") or "")
     settings = await asyncio.to_thread(set_course_settings, workspace_id, default_persona)
     return {"settings": settings}
+
+
+# ---------------------------------------------------------------------------
+# Workspace instructions & course prompt metadata
+# ---------------------------------------------------------------------------
+
+_BASE_PROMPT_PATH = (
+    Path(__file__).resolve().parents[2] / "agents" / "chat" / "prompts" / "en" / "agentic_chat.yaml"
+)
+_EXAM_PREP_TEMPLATE_PATH = (
+    Path(__file__).resolve().parents[2] / "services" / "course" / "templates" / "exam_prep_instructions.md"
+)
+
+
+@functools.lru_cache(maxsize=1)
+def _load_base_prompt() -> str:
+    if not _BASE_PROMPT_PATH.exists():
+        return ""
+    try:
+        with open(_BASE_PROMPT_PATH, encoding="utf-8") as fh:
+            data = yaml.safe_load(fh)
+        if isinstance(data, dict):
+            return str(data.get("general") or "").strip()
+    except Exception:
+        logger.warning("Could not read base prompt from %s", _BASE_PROMPT_PATH, exc_info=True)
+    return ""
+
+
+@functools.lru_cache(maxsize=1)
+def _load_exam_prep_template() -> str:
+    if not _EXAM_PREP_TEMPLATE_PATH.exists():
+        return ""
+    try:
+        return _EXAM_PREP_TEMPLATE_PATH.read_text(encoding="utf-8")
+    except Exception:
+        logger.warning(
+            "Could not read exam prep template from %s",
+            _EXAM_PREP_TEMPLATE_PATH,
+            exc_info=True,
+        )
+    return ""
+
+
+@router.get("/{workspace_id}/instructions")
+async def get_workspace_instructions(workspace_id: str) -> dict:
+    _workspace_root(workspace_id)
+    svc = get_content_workspace_service()
+    workspace_instructions = await asyncio.to_thread(svc.workspace_instructions, workspace_id)
+    settings = await asyncio.to_thread(get_course_settings, workspace_id)
+    return {
+        "base_prompt": _load_base_prompt(),
+        "workspace_instructions": workspace_instructions,
+        "max_instructions_chars": MAX_WORKSPACE_INSTRUCTIONS_CHARS,
+        "default_persona": settings.get("default_persona", ""),
+        "exam_prep_template": _load_exam_prep_template(),
+    }
+

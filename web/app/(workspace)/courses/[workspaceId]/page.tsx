@@ -27,6 +27,7 @@ import {
 import { ExamGroupList } from "@/components/courses/ExamGroupList";
 import { ExamGroupDetail } from "@/components/courses/ExamGroupDetail";
 import { NewExamGroupDialog } from "@/components/courses/NewExamGroupDialog";
+import { CourseInstructionsPanel } from "@/components/courses/CourseInstructionsPanel";
 
 export default function CourseWorkspacePage() {
   const params = useParams<{ workspaceId: string }>();
@@ -207,19 +208,7 @@ export default function CourseWorkspacePage() {
 
       {/* Instructions Tab Content */}
       {activeTab === "instructions" ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--card)] p-12 text-center shadow-sm">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--muted)] text-[var(--muted-foreground)]">
-            <GraduationCap size={24} />
-          </div>
-          <h3 className="mt-4 text-sm font-semibold text-[var(--foreground)]">
-            Course Instructions & Default Persona
-          </h3>
-          <p className="mt-1.5 max-w-sm text-xs leading-relaxed text-[var(--muted-foreground)]">
-            Coming in the next update. You will be able to customize this
-            course&apos;s default tutor persona and custom workspace
-            instructions.
-          </p>
-        </div>
+        <CourseInstructionsPanel workspaceId={workspaceId} />
       ) : (
         /* Exam Groups Tab Content */
         <div className="min-h-[550px] overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm">

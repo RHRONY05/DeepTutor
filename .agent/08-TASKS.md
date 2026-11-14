@@ -91,7 +91,7 @@ Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests
   - **Tests:** `cd web && npx tsc --noEmit -p tsconfig.json` + lint on new files.
   - **AC (browser, http://127.0.0.1:3782):** Courses lists Rony's workspaces; create group CT-02 with a date and syllabus; upload a PDF into it; folder tree shows it; edit topic progress; reload keeps everything.
 
-- [ ] **V11 Instructions panel + default persona per course**
+- [x] **V11 Instructions panel + default persona per course** — done 2026-11-14 (agy Flash High, reviewed). Browser: panel renders, exam-prep defaults inserted and saved for the AI course; default persona save checked via API (left at none).
   - `/courses/[ws]` Instructions tab, `GET /api/courses/{ws}/instructions`, settings sidecar, default persona applied at turn start when none chosen (marked edit where the turn resolves its persona).
   - **Tests:** `tests/fork/test_course_settings.py` (sidecar round-trip, default persona resolution).
   - **AC:** set a default persona for the course → a new chat there answers in that persona's voice; edit workspace instructions from the panel → saved (visible in Settings → Workspace too).

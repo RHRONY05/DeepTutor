@@ -61,6 +61,8 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `deeptutor/modules/manifests/core.json` | modified | Registers `exam_groups` (JSON, no comment marker) |
 | `deeptutor/services/course/instructions.py` | added | Formats course instructions for non-chat pipelines |
 | `deeptutor/agents/question/pipeline.py`, `deeptutor/agents/research/pipeline.py` | modified | Course instructions reach quiz generation and Deep Research prompts |
+| `web/components/courses/CourseInstructionsPanel.tsx` | added | Instructions panel: default persona, course instructions, exam-prep skill, base prompt |
+| `deeptutor/services/session/turns/executor.py` | modified | A course's default persona applies when the chat picked none |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings

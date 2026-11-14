@@ -256,3 +256,23 @@ export async function putCourseSettings(
   const data = await asJsonOrThrow(response);
   return data?.settings ?? { default_persona: "" };
 }
+
+export interface CourseInstructions {
+  base_prompt: string;
+  workspace_instructions: string;
+  max_instructions_chars: number;
+  default_persona: string;
+  exam_prep_template: string;
+}
+
+export async function getCourseInstructions(
+  workspaceId: string,
+): Promise<CourseInstructions> {
+  const response = await apiFetch(
+    apiUrl(`/api/courses/${encodeURIComponent(workspaceId)}/instructions`),
+    {
+      cache: "no-store",
+    },
+  );
+  return await asJsonOrThrow(response);
+}

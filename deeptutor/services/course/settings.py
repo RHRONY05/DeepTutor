@@ -88,3 +88,22 @@ def set_course_settings(workspace_id: str, default_persona: str) -> dict[str, An
         raw[workspace_id] = entry
         _write_raw(path, raw)
     return {"default_persona": entry["default_persona"]}
+
+
+def default_persona_for_current_workspace() -> str:
+    """Return the default persona configured for the active workspace, or ''."""
+    try:
+        from deeptutor.services.workspace.context import current_workspace_id
+
+        ws_id = current_workspace_id()
+        if not ws_id:
+            return ""
+        settings = get_course_settings(ws_id)
+        return str(settings.get("default_persona") or "")
+    except Exception:
+        logger.warning(
+            "Failed to resolve default persona for current workspace",
+            exc_info=True,
+        )
+        return ""
+

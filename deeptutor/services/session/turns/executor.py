@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): fallback to course workspace default persona
 """Generated behavior slice of the unified turn runtime."""
 
 from __future__ import annotations
@@ -621,6 +622,12 @@ class TurnExecutor:
                 if account and str(account[1].get("preset") or "standard") == "learner":
                     learner_profile_prompt = prompt_block(account[1].get("learner_profile"))
             requested_persona = str(payload.get("persona") or "").strip()
+            # fork(course_workspaces) start
+            if not requested_persona:
+                from deeptutor.services.course.settings import default_persona_for_current_workspace
+
+                requested_persona = default_persona_for_current_workspace()
+            # fork(course_workspaces) end
             persona_context = (
                 load_visible_for_context(
                     requested_persona,
