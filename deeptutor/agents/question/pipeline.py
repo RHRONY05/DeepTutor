@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): inject course workspace instructions into plan and quiz prompts
 """QuestionPipeline — agentic-engine-based replacement for ``AgentCoordinator``.
 
 Phase shape:
@@ -489,6 +490,9 @@ class QuestionPipeline:
         counts = _normalize_per_type_counts(per_type_counts, allowed_types)
 
         client = build_openai_client(self.client_config)
+        # fork(course_workspaces) start
+        self._context = context
+        # fork(course_workspaces) end
 
         try:
             await self._prepare_pageindex_tools()
@@ -572,6 +576,9 @@ class QuestionPipeline:
             # ----- Phase 2: Plan -----
             async with stream.stage(STAGE_PLANNING, source=SOURCE):
                 plan = await self._plan(
+                    # fork(course_workspaces) start
+                    context=context,
+                    # fork(course_workspaces) end
                     user_message=user_message,
                     exploration_trace=exploration_trace,
                     num_questions=num_questions,
@@ -653,6 +660,13 @@ class QuestionPipeline:
         workspace_note = workspace_system_note(context, language=self.language)
         if workspace_note:
             system_prompt = f"{system_prompt}\n\n{workspace_note}"
+        # fork(course_workspaces) start
+        from deeptutor.services.course.instructions import workspace_instruction_block
+
+        instr_block = workspace_instruction_block(context)
+        if instr_block:
+            system_prompt = f"{system_prompt}\n\n{instr_block}"
+        # fork(course_workspaces) end
         system_prompt = append_language_directive(system_prompt, self.language)
         user_prompt = self._t(
             "explore.user_template",
@@ -708,6 +722,9 @@ class QuestionPipeline:
     async def _plan(
         self,
         *,
+        # fork(course_workspaces) start
+        context: UnifiedContext | None = None,
+        # fork(course_workspaces) end
         user_message: str,
         exploration_trace: str,
         num_questions: int,
@@ -718,6 +735,13 @@ class QuestionPipeline:
         client: Any,
     ) -> QuizPlan:
         system_prompt = self._t("plan.system", num_questions=num_questions)
+        # fork(course_workspaces) start
+        from deeptutor.services.course.instructions import workspace_instruction_block
+
+        instr_block = workspace_instruction_block(context or getattr(self, "_context", None))
+        if instr_block:
+            system_prompt = f"{system_prompt}\n\n{instr_block}"
+        # fork(course_workspaces) end
         system_prompt = append_language_directive(system_prompt, self.language)
         user_prompt = self._t(
             "plan.user_template",
@@ -894,6 +918,13 @@ class QuestionPipeline:
             kb_note=self._kb_system_note(),
             tool_list=self._tool_list_text(context),
         )
+        # fork(course_workspaces) start
+        from deeptutor.services.course.instructions import workspace_instruction_block
+
+        instr_block = workspace_instruction_block(context)
+        if instr_block:
+            system_prompt = f"{system_prompt}\n\n{instr_block}"
+        # fork(course_workspaces) end
         system_prompt = append_language_directive(system_prompt, self.language)
         user_prompt = self._t(
             "quiz_step.user_template",

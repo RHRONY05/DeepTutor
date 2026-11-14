@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): inject course workspace instructions into decompose, research, and report prompts
 """ResearchPipeline — agentic-engine-based replacement for the legacy
 multi-agent ``ResearchPipeline``.
 
@@ -545,6 +546,9 @@ class ResearchPipeline:
         attachments = list(attachments or [])
         image_attachments = [a for a in attachments if getattr(a, "type", "") == "image"]
         client = self._build_client()
+        # fork(course_workspaces) start
+        self._context = context
+        # fork(course_workspaces) end
 
         try:
             await self._prepare_pageindex_tools()
@@ -867,6 +871,13 @@ class ResearchPipeline:
         outline-preview UX.
         """
         system_prompt = self._t("decompose.system")
+        # fork(course_workspaces) start
+        from deeptutor.services.course.instructions import workspace_instruction_block
+
+        instr_block = workspace_instruction_block(context)
+        if instr_block:
+            system_prompt = f"{system_prompt}\n\n{instr_block}"
+        # fork(course_workspaces) end
         user_prompt = self._t(
             "decompose.user_template",
             topic=topic,
@@ -991,6 +1002,13 @@ class ResearchPipeline:
         workspace_note = workspace_system_note(context, language=self.language)
         if workspace_note:
             system_prompt = f"{system_prompt}\n\n{workspace_note}"
+        # fork(course_workspaces) start
+        from deeptutor.services.course.instructions import workspace_instruction_block
+
+        instr_block = workspace_instruction_block(context)
+        if instr_block:
+            system_prompt = f"{system_prompt}\n\n{instr_block}"
+        # fork(course_workspaces) end
         system_prompt = append_language_directive(system_prompt, self.language)
 
         sibling_topics = self._render_sibling_topics(queue, block)
@@ -1286,6 +1304,9 @@ class ResearchPipeline:
     async def _write_report(
         self,
         *,
+        # fork(course_workspaces) start
+        context: UnifiedContext | None = None,
+        # fork(course_workspaces) end
         topic: str,
         blocks: list[ResearchedBlock],
         citations: CitationManager,
@@ -1293,6 +1314,9 @@ class ResearchPipeline:
         client: Any,
     ) -> str:
         outline = await self._gen_report_outline(
+            # fork(course_workspaces) start
+            context=context,
+            # fork(course_workspaces) end
             topic=topic,
             blocks=blocks,
             citations=citations,
@@ -1349,6 +1373,9 @@ class ResearchPipeline:
             await self._stream_report_separator(stream)
         try:
             intro = await self._write_intro(
+                # fork(course_workspaces) start
+                context=context,
+                # fork(course_workspaces) end
                 topic=topic, outline=outline, stream=stream, client=client
             )
         except Exception as exc:
@@ -1362,6 +1389,9 @@ class ResearchPipeline:
                 await self._stream_report_separator(stream)
             try:
                 body = await self._write_section(
+                    # fork(course_workspaces) start
+                    context=context,
+                    # fork(course_workspaces) end
                     section=section,
                     section_index=section_index,
                     section_count=section_count,
@@ -1383,6 +1413,9 @@ class ResearchPipeline:
             await self._stream_report_separator(stream)
         try:
             conclusion = await self._write_conclusion(
+                # fork(course_workspaces) start
+                context=context,
+                # fork(course_workspaces) end
                 topic=topic,
                 outline=outline,
                 section_bodies=section_bodies,
@@ -1559,6 +1592,9 @@ class ResearchPipeline:
     async def _gen_report_outline(
         self,
         *,
+        # fork(course_workspaces) start
+        context: UnifiedContext | None = None,
+        # fork(course_workspaces) end
         topic: str,
         blocks: list[ResearchedBlock],
         citations: CitationManager,
@@ -1577,6 +1613,13 @@ class ResearchPipeline:
             preview = (rb.knowledge or "").strip().split("\n\n")[0][:400]
             block_summaries.append(f"- [{rb.block.block_id}] {rb.block.sub_topic}\n  {preview}")
         system_prompt = self._t("report.outline.system")
+        # fork(course_workspaces) start
+        from deeptutor.services.course.instructions import workspace_instruction_block
+
+        instr_block = workspace_instruction_block(context or getattr(self, "_context", None))
+        if instr_block:
+            system_prompt = f"{system_prompt}\n\n{instr_block}"
+        # fork(course_workspaces) end
         user_prompt = self._t(
             "report.outline.user_template",
             topic=topic,
@@ -1741,6 +1784,9 @@ class ResearchPipeline:
     async def _write_intro(
         self,
         *,
+        # fork(course_workspaces) start
+        context: UnifiedContext | None = None,
+        # fork(course_workspaces) end
         topic: str,
         outline: ReportOutline,
         stream: StreamBus,
@@ -1757,6 +1803,9 @@ class ResearchPipeline:
             ),
         )
         return await self._stream_report_step(
+            # fork(course_workspaces) start
+            context=context,
+            # fork(course_workspaces) end
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             protocol=_PROTOCOL_REPORT_INTRO,
@@ -1775,6 +1824,9 @@ class ResearchPipeline:
     async def _write_section(
         self,
         *,
+        # fork(course_workspaces) start
+        context: UnifiedContext | None = None,
+        # fork(course_workspaces) end
         section: ReportSectionPlan,
         section_index: int,
         section_count: int,
@@ -1801,6 +1853,9 @@ class ResearchPipeline:
             evidence=evidence,
         )
         return await self._stream_report_step(
+            # fork(course_workspaces) start
+            context=context,
+            # fork(course_workspaces) end
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             protocol=_PROTOCOL_REPORT_SECTION,
@@ -1822,6 +1877,9 @@ class ResearchPipeline:
     async def _write_conclusion(
         self,
         *,
+        # fork(course_workspaces) start
+        context: UnifiedContext | None = None,
+        # fork(course_workspaces) end
         topic: str,
         outline: ReportOutline,
         section_bodies: list[str],
@@ -1846,6 +1904,9 @@ class ResearchPipeline:
             sections_recap="\n\n".join(recap_chunks) or "(no section bodies)",
         )
         return await self._stream_report_step(
+            # fork(course_workspaces) start
+            context=context,
+            # fork(course_workspaces) end
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             protocol=_PROTOCOL_REPORT_CONCLUSION,
@@ -1864,6 +1925,9 @@ class ResearchPipeline:
     async def _stream_report_step(
         self,
         *,
+        # fork(course_workspaces) start
+        context: UnifiedContext | None = None,
+        # fork(course_workspaces) end
         system_prompt: str,
         user_prompt: str,
         protocol: LabelProtocol,
@@ -1882,6 +1946,13 @@ class ResearchPipeline:
         the final bubble before a retry starts. Progress / reasoning traces
         still stream live, so long report calls remain observable.
         """
+        # fork(course_workspaces) start
+        from deeptutor.services.course.instructions import workspace_instruction_block
+
+        instr_block = workspace_instruction_block(context or getattr(self, "_context", None))
+        if instr_block:
+            system_prompt = f"{system_prompt}\n\n{instr_block}"
+        # fork(course_workspaces) end
         messages = self._build_system_user_messages(system_prompt, user_prompt)
         trace_extra = dict(extra_meta or {})
         iter_meta = self._build_simple_trace_meta(

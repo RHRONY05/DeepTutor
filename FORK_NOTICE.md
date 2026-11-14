@@ -59,6 +59,8 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `deeptutor/services/course/templates/exam_prep_instructions.md` | added | Default course instructions template |
 | `deeptutor/tools/exam_groups.py` | added | `exam_groups` tool: list/get/create/update groups and topic progress from chat |
 | `deeptutor/modules/manifests/core.json` | modified | Registers `exam_groups` (JSON, no comment marker) |
+| `deeptutor/services/course/instructions.py` | added | Formats course instructions for non-chat pipelines |
+| `deeptutor/agents/question/pipeline.py`, `deeptutor/agents/research/pipeline.py` | modified | Course instructions reach quiz generation and Deep Research prompts |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings

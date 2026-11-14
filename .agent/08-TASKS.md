@@ -96,7 +96,7 @@ Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests
   - **Tests:** `tests/fork/test_course_settings.py` (sidecar round-trip, default persona resolution).
   - **AC:** set a default persona for the course → a new chat there answers in that persona's voice; edit workspace instructions from the panel → saved (visible in Settings → Workspace too).
 
-- [ ] **V12 Workspace instructions in quiz generation and Deep Research**
+- [x] **V12 Workspace instructions in quiz generation and Deep Research** — done 2026-11-14 (agy Flash High; Claude removed an unrelated CitationManager change).
   - Marked edits where `deep_question` and `deep_research` build their system prompts; reuse `workspace_instructions()`.
   - **Tests:** unit tests that the prompt contains the instructions when set and is unchanged when empty.
 
