@@ -17,6 +17,16 @@ provider's terms.
 - **US5** As Rony, knowledge-base indexing works with a free embedding model (Gemini free tier or Ollama).
 - **US6** As Rony, when `agy` is missing, signed out or out of quota, I see a clear message saying what to do, not a stack trace.
 
+## Course workspaces (feature set 2, V7–V15, design in 10)
+- **US7** As Rony, each university course is a workspace listed on a **Courses** page (sidebar → Home → Courses).
+- **US8** In a course I keep **exam groups** (CT-01, quiz-viva, mid-term …) with type, date, status, syllabus, a topic checklist (todo/learning/known/skipped) and uploaded files (slides, notes, PYQs, in subfolders). Every chat in the course can read every group's files.
+- **US9** When I say "I have CT-02 tomorrow", the tutor follows the **exam-prep** skill: finds the group, asks for missing material, shows a "tick what you know" prerequisite checklist, teaches missing basics first, analyses PYQs, teaches in dependency order with Mermaid diagrams, and always lists **Skipped** topics.
+- **US10** The tutor files notes as a folder tree (`<Exam group>/<Chapter>`), can show the tree and move pages.
+- **US11** An **Instructions** tab per course shows and edits the course's default persona, the course instructions (with "insert exam-prep defaults"), the exam-prep skill (editable copy) and the read-only base prompt. Course instructions also reach quiz generation and Deep Research.
+- **US12** A **YouTube Finder** tool recommends lectures only after checking their captions, with title, channel, link, start timestamp and why. Toggle it in the chat composer's tools.
+- Limits: exam-group uploads ≤ 50 MB each; course instructions ≤ 10k chars; Courses UI is English only.
+- Deferred: per-course memory (memory stays account-wide; reason in 08 V14). Out of scope: Obsidian link, cloud/mobile notes.
+
 ## Out of scope (v1)
 - Images or files sent to the Antigravity model (text only).
 - Claude/GPT models listed by `agy` (Gemini only).

@@ -35,6 +35,7 @@ through the official Antigravity CLI (`agy acp`), next to upstream's built-in Cl
 ## Status
 - [x] Planning + ACP spike (2026-11-14)
 - [ ] Build V0 → V6
+- [x] Course workspaces V7–V13 + V15 (2026-11-15; V14 per-course memory deferred). Design: [.agent/10-COURSE-WORKSPACES.md](.agent/10-COURSE-WORKSPACES.md)
 
 ---
 <!-- fork(antigravity_acp) end -->

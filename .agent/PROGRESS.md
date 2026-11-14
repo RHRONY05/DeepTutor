@@ -8,10 +8,10 @@
 ## Now
 | | |
 |---|---|
-| **Phase** | Course workspaces (V7+) in progress |
-| **Next task** | V11 instructions panel, then V15 final check (V14 deferred) |
+| **Phase** | Course workspaces built (V7–V13, V15); V14 deferred |
+| **Next task** | — (open: per-course memory V14, Courses UI i18n, YouTube duration) |
 | **Blocked on** | — |
-| **Last updated** | 2026-11-14 by Antigravity (V13 done) |
+| **Last updated** | 2026-11-15 by Claude (V15 final check) |
 
 ## Human steps
 Things only Rony can do. Agents add to this list; Rony ticks them.
@@ -33,7 +33,7 @@ Things only Rony can do. Agents add to this list; Rony ticks them.
 | agy account | — (human step above) |
 | Python | 3.13.5 (system). Venv: — |
 | Node / npm | — |
-| Dev URLs | — |
+| Dev URLs | http://127.0.0.1:3782 (web), http://127.0.0.1:8001 (API). Use 127.0.0.1, not localhost (chat WebSocket). |
 
 ## Measured (spike, 2026-11-14)
 | Case | Result |
@@ -81,3 +81,9 @@ Did: Built `deeptutor/tools/youtube_find.py` (`YouTubeFindTool(BaseTool)`) with 
 Tests: ruff ✅ unit ✅ (13 passed in `tests/fork/test_youtube_find.py`, 358 passed in `tests/tools`, 119 passed in `tests/fork`, 6 passed in `tests/api/test_tools_router.py`).
 Commits: None (per instruction).
 Next: V11 instructions panel, V15 final check.
+
+### 2026-11-15 — Claude — V11, V13 review + V15 final check
+Did: reviewed/committed V11 (instructions panel, default persona) and V13 (`youtube_find`). Browser: Instructions tab saves course instructions (exam-prep defaults now set for Artificial_Intelligence); default persona via API (left at none); production build: "Study for this exam" prefills the chat. Live `youtube_find` on "A* admissible heuristic" → 3 caption-checked lectures with start times.
+Tests: 3278 passed / 3 failed in tests/fork, co_writer, notes, tools, capabilities, agents, services/llm, services/session, api/test_tools_router — the 3 failures are unrelated (tex NTFS case, math_animator repair assertion, sqlite Windows file lock). tsc ✅.
+Left running: DeepTutor in production, detached (`deeptutor stop --home "D:\Projects\DeepTutor"` to stop, or the desktop shortcut as usual afterwards).
+Open: V14 per-course memory (deferred), Courses UI i18n, YouTube duration often "Unknown", a stray agy.exe from an early V8 run may still be idle (end it in Task Manager).

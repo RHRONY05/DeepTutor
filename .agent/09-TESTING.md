@@ -64,6 +64,19 @@ Use `gemini-3.8-flash-low` to save quota. Each test ≤ 3 prompts.
 ## Layer 4 — Manual in the real app (V5 AC)
 Desktop browser at the local dev URL `deeptutor start --dev` prints. Steps in 08-TASKS V5.
 
+## Course workspaces (`tests/fork/`)
+| File | Covers |
+|---|---|
+| `test_exam_groups.py` | EXAM.md round-trip, slugs, path confinement (bad group ids, traversal, reserved names), upload cap, delete guard, file tree |
+| `test_courses_api.py` | `/api/courses` routes incl. upload neutralising client paths |
+| `test_exam_groups_tool.py`, `test_exam_prep_skill.py` | `exam_groups` tool actions; builtin `exam-prep` skill is listed and complete |
+| `test_note_tree_tools.py` | `write_note` folder/parent, `note_tree`, `move_note`, cycles |
+| `test_course_settings.py` | default-persona sidecar + resolution from the workspace scope, instructions route |
+| `test_workspace_instructions_pipelines.py` | course instructions in question/research prompts; unchanged when empty |
+| `test_youtube_find.py` | candidate extraction, caption scoring, timestamps, unverified list, timeouts (network mocked) |
+Run: `.venv\Scripts\python -m pytest tests/fork -q`. Upstream tests that pin tool lists were updated with marked edits (obsidian, subagent, kb_files, tools router).
+Known unrelated failures on this PC: `tests/modules` while DeepTutor is running ("Environment is in use") and WinError 87 in worker-stream tests; `test_tex_tools::test_uppercase_extension_file_is_invisible` (case-insensitive NTFS); `test_render_storage::test_chat_output_reveal_requires_local_browser` (path separator).
+
 ## Test data and safety
 - No real Google or Anthropic credentials in tests. The fake agent never touches `.gemini`.
 - Live tests only run when Rony sets the env var. Never in CI.

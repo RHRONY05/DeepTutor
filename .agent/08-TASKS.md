@@ -106,7 +106,7 @@ Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests
 
 - [ ] **V14 Per-course memory** — **deferred** (2026-11-14). Memory (`deeptutor/services/memory/`, ~2.2k lines: traces, background consolidator, snapshots, L3 slots) is keyed to one `memory_root()` per account; per-course memory means routing that root by workspace plus consolidation, Memory UI and migration changes. Too large for now. Per-course state that already exists: exam-group topic progress (known/skipped) and course instructions. Revisit with a design (likely: memory_root per workspace behind a setting, with account memory as fallback).
 
-- [ ] **V15 Final check** — full fork tests, upstream suites touched, tsc, UI walk-through, docs (`FORK_NOTICE.md`, 01, 02, 09, PROGRESS).
+- [x] **V15 Final check** — done 2026-11-15 (see PROGRESS session log). — full fork tests, upstream suites touched, tsc, UI walk-through, docs (`FORK_NOTICE.md`, 01, 02, 09, PROGRESS).
 
 ## Changes outside tasks
 Fixes and changes Rony asks for in chat, outside a task above. One line each, newest last: date · what changed · which docs were updated, or "no doc change: <why>".

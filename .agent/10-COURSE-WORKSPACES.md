@@ -102,7 +102,10 @@ Three editable columns + one read-only: Persona (picker + PERSONA.md editor via 
 skill (read-only builtin view with "copy to my skills to edit"), Base prompt (read-only).
 Default persona applies when a chat in that workspace has no persona chosen.
 
-## Later tasks
-- V12 workspace instructions reach quiz/question generation and Deep Research.
-- V13 `youtube_find` tool.
-- V14 per-course memory (assess size first; may be deferred).
+## Built (as of 2026-11-14)
+- `exam_groups` chat tool (`deeptutor/tools/exam_groups.py`, always mounted with the workspace tools) — list/get/create/update/update_topics.
+- Default persona: `executor.py` falls back to `default_persona_for_current_workspace()` when the turn requested none.
+- Course instructions reach quiz generation (explore, plan, quiz step) and Deep Research (decompose, research blocks, report outline/intro/sections/conclusion) via `deeptutor/services/course/instructions.py`.
+- `youtube_find` (`deeptutor/tools/youtube_find.py`): user-toggleable; web search → YouTube candidates → captions via `resolve_youtube_captions` → keyword/timestamp scoring, educator bonus, shorts penalty; unverified videos listed separately.
+- Sidebar: Courses link in `CategoryNavigation.tsx` + `page-sections.ts` (`nav-entries.ts` keeps the policy entry).
+- V14 per-course memory: deferred (see 08).
