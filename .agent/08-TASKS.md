@@ -67,6 +67,47 @@ V0 Preflight ─▶ V1 Env + Claude Code + fork notice ─▶ V2 ACP client + fa
 
 ---
 
+## Course workspaces (V7 onwards) — design in `10-COURSE-WORKSPACES.md`
+Built by `agy` headless, reviewed and committed by Claude. Order puts what Rony needs for his next CT first (V7, V8, V9, V10).
+Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests live in `tests/fork/`.
+
+- [ ] **V7 Exam groups backend**
+  - `deeptutor/services/course/{__init__,exam_groups,settings}.py`, `deeptutor/api/routers/courses.py`, route entry in `deeptutor/modules/manifests/server.json`.
+  - **Tests:** `tests/fork/test_exam_groups.py` (create/list/get/update/delete, EXAM.md round-trip, slug rules, path traversal and reserved names rejected, upload size cap, file tree), `tests/fork/test_courses_api.py` (routes with a temp workspace root).
+  - **AC:** `pytest tests/fork -q` green, ruff clean; `curl /api/courses/<ws>/groups` on the dev server lists a group created through the API, and the files exist under `<ws root>/exams/<slug>/`.
+
+- [ ] **V8 Exam-prep skill + default instructions**
+  - `deeptutor/skills/builtin/exam-prep/SKILL.md` (flow in 10 §Exam-prep), `deeptutor/services/course/templates/exam_prep_instructions.md`.
+  - **Tests:** `tests/fork/test_exam_prep_skill.py`: the skill service lists `exam-prep` from builtin, frontmatter parses, body mentions `ask_user`, `exams/`, dependency order, skipped topics.
+  - **AC:** in chat inside a course with a group `ct-02`, "I have CT-02 tomorrow" → the agent reads the skill and `exams/ct-02/EXAM.md`, asks for missing material, shows a tick-list of prerequisites.
+
+- [ ] **V9 Notes as a folder tree**
+  - `write_note` + `parent_id`/`folder`; new `note_tree`, `move_note`; manifest + `WORKSPACE_BASELINE_TOOLS` (marked edit in `deeptutor/agents/_shared/tool_composition.py`).
+  - **Tests:** `tests/fork/test_note_tree_tools.py` with a temp `CoWriterStorage`: folder path creates missing pages once (idempotent), parent_id honoured, bad parent → friendly error, tree output, move incl. cycle rejection and move to top level.
+  - **AC:** in chat, "save this as a note under CT-02 / Search" → page appears under those folders in the Co-Writer tree.
+
+- [ ] **V10 Courses page + exam-group UI**
+  - Sidebar entry, `/courses`, `/courses/[ws]` Exam groups tab (10 §UI). New files only except `nav-entries.ts`.
+  - **Tests:** `cd web && npx tsc --noEmit -p tsconfig.json` + lint on new files.
+  - **AC (browser, http://127.0.0.1:3782):** Courses lists Rony's workspaces; create group CT-02 with a date and syllabus; upload a PDF into it; folder tree shows it; edit topic progress; reload keeps everything.
+
+- [ ] **V11 Instructions panel + default persona per course**
+  - `/courses/[ws]` Instructions tab, `GET /api/courses/{ws}/instructions`, settings sidecar, default persona applied at turn start when none chosen (marked edit where the turn resolves its persona).
+  - **Tests:** `tests/fork/test_course_settings.py` (sidecar round-trip, default persona resolution).
+  - **AC:** set a default persona for the course → a new chat there answers in that persona's voice; edit workspace instructions from the panel → saved (visible in Settings → Workspace too).
+
+- [ ] **V12 Workspace instructions in quiz generation and Deep Research**
+  - Marked edits where `deep_question` and `deep_research` build their system prompts; reuse `workspace_instructions()`.
+  - **Tests:** unit tests that the prompt contains the instructions when set and is unchanged when empty.
+
+- [ ] **V13 YouTube finder tool**
+  - `youtube_find` tool (new file): search via the existing web search, keep YouTube results, fetch captions with the existing video-learning code, score channel/caption fit, return title, channel, link, timestamp, why. Never recommend a video whose captions couldn't be checked without saying so.
+  - **Tests:** `tests/fork/test_youtube_find.py` with search and captions mocked.
+
+- [ ] **V14 Per-course memory** — assess first; build only if small, else defer with a reason in PROGRESS.
+
+- [ ] **V15 Final check** — full fork tests, upstream suites touched, tsc, UI walk-through, docs (`FORK_NOTICE.md`, 01, 02, 09, PROGRESS).
+
 ## Changes outside tasks
 Fixes and changes Rony asks for in chat, outside a task above. One line each, newest last: date · what changed · which docs were updated, or "no doc change: <why>".
 - 2026-11-14 · Claude (in chat, at Rony's request) built most of V1–V5: env install + Claude Code setup, `acp_client.py`, `antigravity_acp_provider.py`, all backend wiring, `provider_probe` CLI-login fix, 24 unit tests, smoke script, plus a new **one-click "Connect a subscription" card** (`quick_connect.py`, `POST /api/settings/quick-connect`, `SubscriptionConnectCard.tsx`). Checked live in the app: Antigravity chat, follow-up context, task model. Docs updated: 07 §3, FORK_NOTICE, PROGRESS. **Not done yet:** `tests/integration/test_antigravity_acp_live.py`, V5 AC 3 (Stop button), AC 4 (a real DeepTutor tool in the UI), AC 6 (embeddings), V6 final pass, and nothing is committed. Antigravity should start at V0 and treat V1–V5 as "verify and fill the gaps", not rebuild.
