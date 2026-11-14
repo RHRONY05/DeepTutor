@@ -339,6 +339,17 @@
       },
       "auth": "public",
       "order": 842
+    },
+    {
+      "reference": "deeptutor.api.routers.courses:router",
+      "options": {
+        "prefix": "/api/courses",
+        "tags": [
+          "courses"
+        ]
+      },
+      "auth": "learning",
+      "order": 850
     }
   ],
   "commands": [],

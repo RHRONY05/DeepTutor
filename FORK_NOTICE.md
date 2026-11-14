@@ -11,6 +11,9 @@ Fork maintained by **RH.RONY** (Muhammad Rony). It was forked from upstream `mai
 - **`antigravity_acp` provider:** DeepTutor's tutor can run on Gemini through a Google AI Pro
   subscription, by driving the official Antigravity CLI in its documented ACP server mode (`agy acp`).
   No API key. Design: [.agent/07-ACP-PROVIDER.md](./.agent/07-ACP-PROVIDER.md).
+- **Course workspaces:** each workspace is a university course with exam groups (`exams/<slug>/`),
+  an exam-prep teaching skill, notes as a folder tree, and a Courses page. Design:
+  [.agent/10-COURSE-WORKSPACES.md](./.agent/10-COURSE-WORKSPACES.md).
 - Setup notes for upstream's built-in **Claude Code (subscription)** provider and free embeddings.
 
 ## Changed files (Apache-2.0 §4b)
@@ -41,6 +44,11 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `web/components/settings/ServiceConfigEditor.tsx` | modified | `antigravity_acp` is a CLI-login binding |
 | `web/components/settings/ProvidersWorkspace.tsx` | modified | Shows the connect card on Settings → Providers |
 | `web/lib/provider-branding.ts` | modified | Antigravity icon |
+| `scripts/fork/start-deeptutor.cmd` | added | One-click local launcher |
+| `deeptutor/services/course/` (`exam_groups.py`, `settings.py`) | added | Exam groups as folders + per-course settings sidecar |
+| `deeptutor/api/routers/courses.py` | added | `/api/courses` (courses, exam groups, uploads, settings) |
+| `deeptutor/modules/manifests/server.json` | modified | Route entry for `/api/courses` (JSON, no comment marker) |
+| `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings
 - `DEEPTUTOR_LIVE_AGY=1` (set in the shell) runs the live Antigravity tests. They spend real quota.

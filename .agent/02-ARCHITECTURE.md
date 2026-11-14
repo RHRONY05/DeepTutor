@@ -58,6 +58,9 @@ If `grep -rn "claude_code"` finds another place that lists CLI-login or OAuth ba
 - Only test env: `DEEPTUTOR_LIVE_AGY=1` (set in the shell) turns on the live tests. Mention it in `FORK_NOTICE.md`.
 - Embeddings (no code change): Settings → Embedding → **Gemini** → `gemini-embedding-001` with a free Google AI Studio API key (Rony adds it in the UI), or **Ollama** → `nomic-embed-text` if Ollama is installed. Pick one before the first index. Changing later means re-indexing.
 
+## Course workspaces (V7+)
+Files, wiring and data layout: see `10-COURSE-WORKSPACES.md`. Markers there are `fork(course_workspaces)`.
+
 ## Fork markers and licence (Apache-2.0)
 - Keep `LICENSE` unchanged. `FORK_NOTICE.md` at the root names the fork, credits HKUDS/DeepTutor, and lists every modified and added file with a one-line reason. Every task that touches a file updates that list.
 - If the project is renamed later, the credit to HKUDS/DeepTutor stays in `FORK_NOTICE.md` and the README.

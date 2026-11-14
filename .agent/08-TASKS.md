@@ -71,7 +71,7 @@ V0 Preflight ─▶ V1 Env + Claude Code + fork notice ─▶ V2 ACP client + fa
 Built by `agy` headless, reviewed and committed by Claude. Order puts what Rony needs for his next CT first (V7, V8, V9, V10).
 Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests live in `tests/fork/`.
 
-- [ ] **V7 Exam groups backend**
+- [x] **V7 Exam groups backend** — done 2026-11-14 (agy Sonnet + Claude review: slug confinement fix, upload read cap). 55 tests.
   - `deeptutor/services/course/{__init__,exam_groups,settings}.py`, `deeptutor/api/routers/courses.py`, route entry in `deeptutor/modules/manifests/server.json`.
   - **Tests:** `tests/fork/test_exam_groups.py` (create/list/get/update/delete, EXAM.md round-trip, slug rules, path traversal and reserved names rejected, upload size cap, file tree), `tests/fork/test_courses_api.py` (routes with a temp workspace root).
   - **AC:** `pytest tests/fork -q` green, ruff clean; `curl /api/courses/<ws>/groups` on the dev server lists a group created through the API, and the files exist under `<ws root>/exams/<slug>/`.
