@@ -51,6 +51,7 @@ Agents append one line per choice the docs didn't cover (newest last). If it cha
 - 2026-11-14: Course workspaces: exam groups are plain folders `exams/<slug>/EXAM.md` in the course workspace (no DB), so the existing workspace tools see them. Recorded in 10.
 - 2026-11-14: No custom checklist card: `ask_user` (4×8 multi-select) is enough for a CT prerequisite list; checked live.
 - 2026-11-14: Uploads keep only the file name of the client path (`../../x` → `x`); a bad `folder` is still rejected.
+- 2026-11-14: Per-course memory (V14) deferred; reason in 08-TASKS V14.
 - 2026-11-14: Builds run `agy -p … --mode auto --sandbox` (accept-edits denies shell commands and ends the print turn). Claude-model quota ran out after one run; Gemini 3.8 Flash High used after that. agy print runs often hang or lose the stream on this network, so a watchdog runner restarts/resumes them.
 
 ## Session log

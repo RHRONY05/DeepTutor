@@ -104,7 +104,7 @@ Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests
   - `youtube_find` tool (new file): search via the existing web search, keep YouTube results, fetch captions with the existing video-learning code, score channel/caption fit, return title, channel, link, timestamp, why. Never recommend a video whose captions couldn't be checked without saying so.
   - **Tests:** `tests/fork/test_youtube_find.py` with search and captions mocked.
 
-- [ ] **V14 Per-course memory** — assess first; build only if small, else defer with a reason in PROGRESS.
+- [ ] **V14 Per-course memory** — **deferred** (2026-11-14). Memory (`deeptutor/services/memory/`, ~2.2k lines: traces, background consolidator, snapshots, L3 slots) is keyed to one `memory_root()` per account; per-course memory means routing that root by workspace plus consolidation, Memory UI and migration changes. Too large for now. Per-course state that already exists: exam-group topic progress (known/skipped) and course instructions. Revisit with a design (likely: memory_root per workspace behind a setting, with account memory as fallback).
 
 - [ ] **V15 Final check** — full fork tests, upstream suites touched, tsc, UI walk-through, docs (`FORK_NOTICE.md`, 01, 02, 09, PROGRESS).
 
