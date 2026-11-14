@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): include note_tree and move_note in baseline tool assertions
 """Tests for the subagent capability: binding, activation, tool budget/streaming.
 
 The capability is the connected-agent twin of Obsidian — selecting a
@@ -132,6 +133,10 @@ def test_exclusive_compose_drops_builtins_but_keeps_coexisting_rag() -> None:
         "workspace_present",
         "write_note",
         "search_notes",
+        # fork(course_workspaces) start
+        "note_tree",
+        "move_note",
+        # fork(course_workspaces) end
         "consult_subagent",
         "rag",
         "kb_files",
@@ -156,6 +161,10 @@ def test_exclusive_compose_pure_subagent_mounts_no_rag() -> None:
         "workspace_present",
         "write_note",
         "search_notes",
+        # fork(course_workspaces) start
+        "note_tree",
+        "move_note",
+        # fork(course_workspaces) end
         "consult_subagent",
         "ask_user",
     }

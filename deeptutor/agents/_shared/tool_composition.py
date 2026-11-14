@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): add note_tree and move_note to baseline tools
 """Per-turn tool composition policy shared by chat / quiz pipelines.
 
 Owns the rule "given the user's composer toggles + the turn's context
@@ -81,6 +82,10 @@ WORKSPACE_BASELINE_TOOLS: tuple[str, ...] = (
     "workspace_present",
     "write_note",
     "search_notes",
+    # fork(course_workspaces) start
+    "note_tree",
+    "move_note",
+    # fork(course_workspaces) end
 )
 
 

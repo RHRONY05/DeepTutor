@@ -34,6 +34,14 @@
     "note_suggest": {
       "class_path": "deeptutor.capabilities.notes.tools:NoteSuggestTool",
       "order": 3
+    },
+    "note_tree": {
+      "class_path": "deeptutor.capabilities.notes.tools:NoteTreeTool",
+      "order": 4
+    },
+    "move_note": {
+      "class_path": "deeptutor.capabilities.notes.tools:MoveNoteTool",
+      "order": 5
     }
   },
   "routes": [

@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): include note_tree and move_note in baseline tool assertions
 """Tests for the Obsidian knowledge capability: vault ops, hooks, tools, exclusivity."""
 
 from __future__ import annotations
@@ -232,6 +233,10 @@ def test_exclusive_compose_drops_builtins_but_keeps_coexisting_rag() -> None:
         "workspace_present",
         "write_note",
         "search_notes",
+        # fork(course_workspaces) start
+        "note_tree",
+        "move_note",
+        # fork(course_workspaces) end
         "obsidian_search",
         "obsidian_read",
         "rag",
@@ -258,6 +263,10 @@ def test_exclusive_compose_pure_vault_mounts_no_rag() -> None:
         "workspace_present",
         "write_note",
         "search_notes",
+        # fork(course_workspaces) start
+        "note_tree",
+        "move_note",
+        # fork(course_workspaces) end
         "obsidian_search",
         "obsidian_read",
         "ask_user",

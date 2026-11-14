@@ -48,6 +48,11 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `deeptutor/services/course/` (`exam_groups.py`, `settings.py`) | added | Exam groups as folders + per-course settings sidecar |
 | `deeptutor/api/routers/courses.py` | added | `/api/courses` (courses, exam groups, uploads, settings) |
 | `deeptutor/modules/manifests/server.json` | modified | Route entry for `/api/courses` (JSON, no comment marker) |
+| `deeptutor/capabilities/notes/tree.py` | added | Folder paths, tree outline and move for notebook pages |
+| `deeptutor/capabilities/notes/tools.py` | modified | `write_note` folder/parent, new `note_tree` and `move_note` tools |
+| `deeptutor/modules/manifests/co-writer.json` | modified | Registers `note_tree`, `move_note` (JSON, no comment marker) |
+| `deeptutor/agents/_shared/tool_composition.py` | modified | Fork note/exam tools are always-available workspace tools |
+| `tests/capabilities/test_obsidian_capability.py`, `tests/capabilities/test_subagent_capability.py`, `tests/tools/test_kb_files_tool.py` | modified | Pinned baseline tool lists include the fork tools |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings

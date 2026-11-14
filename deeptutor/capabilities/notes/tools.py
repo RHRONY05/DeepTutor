@@ -1,6 +1,11 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): add folder tree support to write_note, NoteTreeTool, MoveNoteTool
 import copy
 import json
 
+# fork(course_workspaces) start
+from deeptutor.capabilities.notes.tree import move_page, render_tree, resolve_folder
+
+# fork(course_workspaces) end
 from deeptutor.co_writer.storage import get_co_writer_storage
 from deeptutor.core.tool_protocol import BaseTool, ToolDefinition, ToolParameter, ToolResult
 from deeptutor.notes.proposals import propose
@@ -142,7 +147,8 @@ class WriteNoteTool(BaseTool):
     def get_definition(self):
         return ToolDefinition(
             name="write_note",
-            description="Create an authored notebook page. To preserve an original conversation use save_favorite. Existing pages are edited through reviewable note_suggest in their editor.",
+            # fork(course_workspaces) start
+            description="Create an authored notebook page, optionally filed in a folder tree. To preserve an original conversation use save_favorite. Existing pages are edited through reviewable note_suggest in their editor.",
             parameters=[
                 ToolParameter(name="title", type="string", description="Page title"),
                 ToolParameter(
@@ -150,7 +156,20 @@ class WriteNoteTool(BaseTool):
                     type="string",
                     description="Full authored Markdown, preserving citations and source links",
                 ),
+                ToolParameter(
+                    name="parent_id",
+                    type="string",
+                    description="Optional parent page ID to file this note under",
+                    required=False,
+                ),
+                ToolParameter(
+                    name="folder",
+                    type="string",
+                    description="Optional folder path like 'CT-02/Chapter 1', created on demand under parent_id if both are given",
+                    required=False,
+                ),
             ],
+            # fork(course_workspaces) end
         )
 
     async def execute(self, **kwargs):
@@ -159,14 +178,48 @@ class WriteNoteTool(BaseTool):
             return ToolResult(
                 content="Provide a title and content (up to 200000 characters)", success=False
             )
-        doc = get_co_writer_storage().create_document(title=title[:200], content=content)
-        return ToolResult(
-            content=json.dumps(
-                {"id": doc.id, "title": doc.title, "url": f"/co-writer/{doc.id}"},
-                ensure_ascii=False,
-            ),
-            success=True,
-        )
+        # fork(course_workspaces) start
+        parent_id = kwargs.get("parent_id")
+        if parent_id is not None:
+            parent_id = str(parent_id).strip() or None
+        folder = kwargs.get("folder")
+        if folder is not None:
+            folder = str(folder).strip() or None
+
+        storage = get_co_writer_storage()
+        try:
+            resolved_parent_id = parent_id
+            if folder:
+                resolved_parent_id = resolve_folder(storage, folder, parent_id=parent_id)
+            elif resolved_parent_id:
+                try:
+                    parent_doc = storage.load_document(resolved_parent_id)
+                except ValueError:
+                    parent_doc = None
+                if parent_doc is None:
+                    return ToolResult(
+                        content=f"Parent page '{resolved_parent_id}' does not exist",
+                        success=False,
+                    )
+            doc = storage.create_document(
+                title=title[:200], content=content, parent_id=resolved_parent_id
+            )
+            return ToolResult(
+                content=json.dumps(
+                    {
+                        "id": doc.id,
+                        "title": doc.title,
+                        "url": f"/co-writer/{doc.id}",
+                        "parent_id": doc.parent_id,
+                        "folder": folder or "",
+                    },
+                    ensure_ascii=False,
+                ),
+                success=True,
+            )
+        except ValueError as exc:
+            return ToolResult(content=str(exc), success=False)
+        # fork(course_workspaces) end
 
 
 class SearchNotesTool(BaseTool):
@@ -220,3 +273,87 @@ class SearchNotesTool(BaseTool):
             return ToolResult(content=json.dumps(results, ensure_ascii=False), success=True)
         except ValueError as exc:
             return ToolResult(content=str(exc), success=False)
+
+
+# fork(course_workspaces) start
+class NoteTreeTool(BaseTool):
+    def get_definition(self):
+        return ToolDefinition(
+            name="note_tree",
+            description="Show the notes workspace as an indented folder tree outline. Specify page_id to view only a specific subtree.",
+            parameters=[
+                ToolParameter(
+                    name="page_id",
+                    type="string",
+                    description="Optional page ID to show only its subtree",
+                    required=False,
+                )
+            ],
+        )
+
+    async def execute(self, **kwargs):
+        storage = get_co_writer_storage()
+        page_id = kwargs.get("page_id")
+        if page_id is not None:
+            page_id = str(page_id).strip() or None
+        try:
+            tree_text = render_tree(storage, root_id=page_id)
+            return ToolResult(content=tree_text, success=True)
+        except ValueError as exc:
+            return ToolResult(content=str(exc), success=False)
+
+
+class MoveNoteTool(BaseTool):
+    def get_definition(self):
+        return ToolDefinition(
+            name="move_note",
+            description="Move a notebook page to a new parent folder or to the top level. Provide parent_id or folder, or leave both empty to move to top level.",
+            parameters=[
+                ToolParameter(
+                    name="page_id",
+                    type="string",
+                    description="Page ID to move",
+                    required=True,
+                ),
+                ToolParameter(
+                    name="parent_id",
+                    type="string",
+                    description="Target parent page ID. Leave empty (with folder empty) to move to top level.",
+                    required=False,
+                ),
+                ToolParameter(
+                    name="folder",
+                    type="string",
+                    description="Target folder path like 'CT-02/Chapter 1', created on demand under parent_id if both given.",
+                    required=False,
+                ),
+            ],
+        )
+
+    async def execute(self, **kwargs):
+        page_id = str(kwargs.get("page_id", "")).strip()
+        if not page_id:
+            return ToolResult(content="page_id is required", success=False)
+        parent_id = kwargs.get("parent_id")
+        if parent_id is not None:
+            parent_id = str(parent_id).strip() or None
+        folder = kwargs.get("folder")
+        if folder is not None:
+            folder = str(folder).strip() or None
+
+        storage = get_co_writer_storage()
+        try:
+            target_parent_id = parent_id
+            if folder:
+                target_parent_id = resolve_folder(storage, folder, parent_id=parent_id)
+            move_page(storage, page_id, target_parent_id)
+            return ToolResult(
+                content=json.dumps(
+                    {"id": page_id, "parent_id": target_parent_id, "status": "moved"},
+                    ensure_ascii=False,
+                ),
+                success=True,
+            )
+        except ValueError as exc:
+            return ToolResult(content=str(exc), success=False)
+# fork(course_workspaces) end

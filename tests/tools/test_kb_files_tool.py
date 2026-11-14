@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): include note_tree and move_note in baseline tool assertions
 """``kb_files`` — enumerate a knowledge base, the query ``rag`` cannot serve.
 
 ``rag`` returns passages, so "how many files are in here" and "is X in this KB"
@@ -105,6 +106,10 @@ class TestMountGate:
             "workspace_present",
             "write_note",
             "search_notes",
+            # fork(course_workspaces) start
+            "note_tree",
+            "move_note",
+            # fork(course_workspaces) end
             "obsidian_read",
             "rag",
             "kb_files",

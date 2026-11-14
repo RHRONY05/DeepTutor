@@ -81,7 +81,7 @@ Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests
   - **Tests:** `tests/fork/test_exam_prep_skill.py`: the skill service lists `exam-prep` from builtin, frontmatter parses, body mentions `ask_user`, `exams/`, dependency order, skipped topics.
   - **AC:** in chat inside a course with a group `ct-02`, "I have CT-02 tomorrow" → the agent reads the skill and `exams/ct-02/EXAM.md`, asks for missing material, shows a tick-list of prerequisites.
 
-- [ ] **V9 Notes as a folder tree**
+- [x] **V9 Notes as a folder tree** — done 2026-11-14 (agy Gemini Flash High, reviewed). 17 new tests; co_writer/notes suites green.
   - `write_note` + `parent_id`/`folder`; new `note_tree`, `move_note`; manifest + `WORKSPACE_BASELINE_TOOLS` (marked edit in `deeptutor/agents/_shared/tool_composition.py`).
   - **Tests:** `tests/fork/test_note_tree_tools.py` with a temp `CoWriterStorage`: folder path creates missing pages once (idempotent), parent_id honoured, bad parent → friendly error, tree output, move incl. cycle rejection and move to top level.
   - **AC:** in chat, "save this as a note under CT-02 / Search" → page appears under those folders in the Co-Writer tree.
