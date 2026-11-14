@@ -236,6 +236,7 @@ def test_exclusive_compose_drops_builtins_but_keeps_coexisting_rag() -> None:
         # fork(course_workspaces) start
         "note_tree",
         "move_note",
+        "exam_groups",
         # fork(course_workspaces) end
         "obsidian_search",
         "obsidian_read",
@@ -266,6 +267,7 @@ def test_exclusive_compose_pure_vault_mounts_no_rag() -> None:
         # fork(course_workspaces) start
         "note_tree",
         "move_note",
+        "exam_groups",
         # fork(course_workspaces) end
         "obsidian_search",
         "obsidian_read",

@@ -76,7 +76,7 @@ Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests
   - **Tests:** `tests/fork/test_exam_groups.py` (create/list/get/update/delete, EXAM.md round-trip, slug rules, path traversal and reserved names rejected, upload size cap, file tree), `tests/fork/test_courses_api.py` (routes with a temp workspace root).
   - **AC:** `pytest tests/fork -q` green, ruff clean; `curl /api/courses/<ws>/groups` on the dev server lists a group created through the API, and the files exist under `<ws root>/exams/<slug>/`.
 
-- [ ] **V8 Exam-prep skill + default instructions**
+- [x] **V8 Exam-prep skill + default instructions** — done 2026-11-14 (skill by Claude, `exam_groups` tool by agy Flash High). Chat check pending (V15).
   - `deeptutor/skills/builtin/exam-prep/SKILL.md` (flow in 10 §Exam-prep), `deeptutor/services/course/templates/exam_prep_instructions.md`.
   - **Tests:** `tests/fork/test_exam_prep_skill.py`: the skill service lists `exam-prep` from builtin, frontmatter parses, body mentions `ask_user`, `exams/`, dependency order, skipped topics.
   - **AC:** in chat inside a course with a group `ct-02`, "I have CT-02 tomorrow" → the agent reads the skill and `exams/ct-02/EXAM.md`, asks for missing material, shows a tick-list of prerequisites.

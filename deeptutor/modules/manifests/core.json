@@ -148,6 +148,10 @@
       "class_path": "deeptutor.tools.workspace:WorkspaceExportTool",
       "order": 36
     },
+    "exam_groups": {
+      "class_path": "deeptutor.tools.exam_groups:ExamGroupsTool",
+      "order": 37
+    },
     "imagegen": {
       "class_path": "deeptutor.tools.media_gen_tool:ImagegenTool",
       "order": 38

@@ -240,11 +240,21 @@ def test_upload_file_with_folder(client: TestClient, workspace_root: Path) -> No
     assert (workspace_root / "exams" / "lab" / "pyq" / "2023.pdf").read_bytes() == b"pdf"
 
 
-def test_upload_traversal_rejected(client: TestClient) -> None:
+def test_upload_traversal_is_neutralised(client: TestClient, workspace_root: Path) -> None:
     client.post("/api/courses/ws-1/groups", json={"name": "Lab"})
     resp = client.post(
         "/api/courses/ws-1/groups/lab/files",
         files={"file": ("../../evil.txt", io.BytesIO(b"bad"), "text/plain")},
+    )
+    # Client paths are reduced to their file name, so nothing escapes the group.
+    assert resp.status_code == 201
+    assert resp.json()["path"] == "evil.txt"
+    assert (workspace_root / "exams" / "lab" / "evil.txt").exists()
+    assert not (workspace_root / "evil.txt").exists()
+    resp = client.post(
+        "/api/courses/ws-1/groups/lab/files",
+        files={"file": ("x.txt", io.BytesIO(b"bad"), "text/plain")},
+        data={"folder": "../.."},
     )
     assert resp.status_code == 400
 

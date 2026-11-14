@@ -55,6 +55,10 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `tests/capabilities/test_obsidian_capability.py`, `tests/capabilities/test_subagent_capability.py`, `tests/tools/test_kb_files_tool.py` | modified | Pinned baseline tool lists include the fork tools |
 | `web/app/(workspace)/courses/`, `web/components/courses/`, `web/lib/courses-api.ts` | added | Courses page, exam-group list/detail, uploads, folder tree |
 | `web/components/sidebar/nav-entries.ts`, `CategoryNavigation.tsx`, `page-sections.ts` | modified | "Courses" link in the sidebar Home shelf |
+| `deeptutor/skills/builtin/exam-prep/SKILL.md` | added | Exam-prep teaching playbook (prerequisites first, PYQs, skipped list) |
+| `deeptutor/services/course/templates/exam_prep_instructions.md` | added | Default course instructions template |
+| `deeptutor/tools/exam_groups.py` | added | `exam_groups` tool: list/get/create/update groups and topic progress from chat |
+| `deeptutor/modules/manifests/core.json` | modified | Registers `exam_groups` (JSON, no comment marker) |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings
