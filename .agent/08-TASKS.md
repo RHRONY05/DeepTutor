@@ -86,7 +86,7 @@ Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests
   - **Tests:** `tests/fork/test_note_tree_tools.py` with a temp `CoWriterStorage`: folder path creates missing pages once (idempotent), parent_id honoured, bad parent → friendly error, tree output, move incl. cycle rejection and move to top level.
   - **AC:** in chat, "save this as a note under CT-02 / Search" → page appears under those folders in the Co-Writer tree.
 
-- [ ] **V10 Courses page + exam-group UI**
+- [x] **V10 Courses page + exam-group UI** — done 2026-11-14 (agy Opus/Flash, finished by Claude: sidebar link, hint text). Checked in the browser: create group, topics, upload into subfolder, tree. UI text not i18n'd yet (eslint warnings only).
   - Sidebar entry, `/courses`, `/courses/[ws]` Exam groups tab (10 §UI). New files only except `nav-entries.ts`.
   - **Tests:** `cd web && npx tsc --noEmit -p tsconfig.json` + lint on new files.
   - **AC (browser, http://127.0.0.1:3782):** Courses lists Rony's workspaces; create group CT-02 with a date and syllabus; upload a PDF into it; folder tree shows it; edit topic progress; reload keeps everything.

@@ -1,6 +1,10 @@
 'use client'
+// Modified in the RH.RONY fork (Apache-2.0 §4b): Courses link in the Home shelf.
 
 import { CalendarDays } from 'lucide-react'
+// fork(course_workspaces) start
+import { BookOpen } from 'lucide-react'
+// fork(course_workspaces) end
 
 import { useId, useState, startTransition, type ReactNode } from 'react'
 import dynamic from 'next/dynamic'
@@ -235,6 +239,9 @@ export function CategoryBody({
           )}
           <Section title={t('navigation.workspace')}>
             {[
+              // fork(course_workspaces) start
+              { href: '/courses', label: 'Courses', icon: BookOpen },
+              // fork(course_workspaces) end
               { href: '/calendar', label: 'Calendar', icon: CalendarDays },
               { href: '/kanban', label: 'Task Board', icon: Columns3 },
               { href: '/co-writer', label: 'Co-Writer', icon: PenLine },

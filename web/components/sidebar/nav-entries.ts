@@ -1,6 +1,10 @@
+// Modified in the RH.RONY fork (Apache-2.0 §4b): add Courses nav entry.
 import { CalendarDays } from 'lucide-react'
 import { LEARNING_HUB } from '@/lib/learning-routes'
 import {
+// fork(course_workspaces) start
+  BookOpen,
+// fork(course_workspaces) end
   Bot,
   GraduationCap,
   HeartHandshake,
@@ -47,6 +51,14 @@ export const PRIMARY_NAV: NavEntry[] = [
     requires: 'llm',
     surfaces: ['chat'],
   },
+  // fork(course_workspaces) start
+  {
+    href: '/courses',
+    label: 'Courses',
+    icon: BookOpen,
+    surfaces: ['chat'],
+  },
+  // fork(course_workspaces) end
   {
     href: '/partners',
     label: 'Partners',

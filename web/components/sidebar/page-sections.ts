@@ -1,4 +1,8 @@
+// Modified in the RH.RONY fork (Apache-2.0 §4b): Courses page in the Home section.
 import { CalendarDays } from 'lucide-react'
+// fork(course_workspaces) start
+import { BookOpen } from 'lucide-react'
+// fork(course_workspaces) end
 import { Columns3, LayoutGrid, MessageCircle, PenLine, Plus, type LucideIcon } from 'lucide-react'
 import {
   HomeShelfIcon,
@@ -66,6 +70,9 @@ export function pageSections({
       icon: HomeShelfIcon,
       pages: [
         { href: '/chat', label: t('Chat'), icon: MessageCircle },
+        // fork(course_workspaces) start
+        { href: '/courses', label: t('Courses'), icon: BookOpen },
+        // fork(course_workspaces) end
         { href: '/calendar', label: t('Calendar'), icon: CalendarDays, account: true },
         { href: '/kanban', label: t('Task Board'), icon: Columns3 },
         { href: '/co-writer', label: t('Co-Writer'), icon: PenLine },
