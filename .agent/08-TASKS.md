@@ -100,7 +100,7 @@ Fork markers for these tasks: `fork(course_workspaces) start/end`. All new tests
   - Marked edits where `deep_question` and `deep_research` build their system prompts; reuse `workspace_instructions()`.
   - **Tests:** unit tests that the prompt contains the instructions when set and is unchanged when empty.
 
-- [ ] **V13 YouTube finder tool**
+- [x] **V13 YouTube finder tool** — done 2026-11-14 (agy Flash High, reviewed). 13 tests; live run on "A* admissible heuristic" returned 3 caption-checked university lectures with start times + 1 unverified. Known gap: duration often "Unknown" (caption provider gives no length).
   - `youtube_find` tool (new file): search via the existing web search, keep YouTube results, fetch captions with the existing video-learning code, score channel/caption fit, return title, channel, link, timestamp, why. Never recommend a video whose captions couldn't be checked without saying so.
   - **Tests:** `tests/fork/test_youtube_find.py` with search and captions mocked.
 

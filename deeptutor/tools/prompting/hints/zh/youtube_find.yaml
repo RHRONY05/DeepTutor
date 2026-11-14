@@ -1,0 +1,7 @@
+# Added in the RH.RONY fork of DeepTutor (Apache-2.0). Not part of upstream.
+short_description: "搜索带有字幕验证的 YouTube 教学视频与课程。"
+when_to_use: "当学生需要视频讲解，或直观生动的视频教程有助于理解概念时使用。"
+input_format: "学习主题（例如 'A* 搜索算法'、'特征值与特征向量'）。"
+guideline: "推荐前会核验字幕；向学生说明推荐理由及建议的开始播放时间点。"
+note: "优先推荐知名教育频道视频，未核验证实字幕的视频会单独提示。"
+phase: "expansion"

@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): add youtube_find to user-toggleable tools.
 """Built-in tool implementations and metadata."""
 
 from __future__ import annotations
@@ -2283,6 +2284,9 @@ USER_TOGGLEABLE_TOOL_NAMES: tuple[str, ...] = (
     "geogebra_analysis",
     "imagegen",
     "videogen",
+    # fork(course_workspaces) start
+    "youtube_find",
+    # fork(course_workspaces) end
 )
 
 # Built-in tools the chat agent loop auto-mounts under context gates (a KB
@@ -2338,6 +2342,9 @@ _LAZY_CLASS_EXPORTS = {
     "PartnerMemorizeTool": "deeptutor.tools.partner_memory:PartnerMemorizeTool",
     "PartnerSearchTool": "deeptutor.tools.partner_memory:PartnerSearchTool",
     "SubmitVisualizationTool": "deeptutor.visualizers.tool:SubmitVisualizationTool",
+    # fork(course_workspaces) start
+    "YouTubeFindTool": "deeptutor.tools.youtube_find:YouTubeFindTool",
+    # fork(course_workspaces) end
 }
 
 
@@ -2388,4 +2395,7 @@ __all__ = [
     "WebSearchTool",
     "WriteMemoryTool",
     "WriteNoteTool",
+    # fork(course_workspaces) start
+    "YouTubeFindTool",
+    # fork(course_workspaces) end
 ]

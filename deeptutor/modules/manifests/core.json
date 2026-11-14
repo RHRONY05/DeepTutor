@@ -27,7 +27,8 @@
           "reason",
           "geogebra_analysis",
           "imagegen",
-          "videogen"
+          "videogen",
+          "youtube_find"
         ],
         "cli_aliases": [
           "chat"
@@ -183,6 +184,10 @@
     "propose_creation": {
       "class_path": "deeptutor.capabilities.creator.tools:ProposeCreationTool",
       "order": 102
+    },
+    "youtube_find": {
+      "class_path": "deeptutor.tools.youtube_find:YouTubeFindTool",
+      "order": 103
     }
   },
   "routes": [],

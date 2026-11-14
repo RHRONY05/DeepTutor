@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): export YouTubeFindTool.
 """Public entry points for the tool layer."""
 
 from __future__ import annotations
@@ -21,6 +22,9 @@ _LAZY_EXPORTS = {
     "WebSearchTool": (".builtin", "WebSearchTool"),
     "ToolPromptComposer": (".prompting", "ToolPromptComposer"),
     "load_prompt_hints": (".prompting", "load_prompt_hints"),
+    # fork(course_workspaces) start
+    "YouTubeFindTool": (".youtube_find", "YouTubeFindTool"),
+    # fork(course_workspaces) end
 }
 
 __all__ = sorted(_LAZY_EXPORTS)

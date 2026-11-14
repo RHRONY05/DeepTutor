@@ -1,3 +1,4 @@
+// Modified in the RH.RONY fork (Apache-2.0 §4b): add youtube_find to tools presentation.
 import {
   BarChart3,
   BrainCircuit,
@@ -14,6 +15,7 @@ import {
   Microscope,
   PenLine,
   Sparkles,
+  Video,
   type LucideIcon,
 } from "lucide-react";
 
@@ -27,7 +29,10 @@ export type ToolName =
   | "reason"
   | "paper_search"
   | "imagegen"
-  | "videogen";
+  | "videogen"
+  // fork(course_workspaces) start
+  | "youtube_find";
+  // fork(course_workspaces) end
 
 export interface ToolDef {
   name: ToolName;
@@ -44,6 +49,9 @@ export const ALL_TOOLS: ToolDef[] = [
   { name: "paper_search", label: "Arxiv Search", icon: FileSearch },
   { name: "imagegen", label: "Image Gen", icon: ImageIcon },
   { name: "videogen", label: "Video Gen", icon: Clapperboard },
+  // fork(course_workspaces) start
+  { name: "youtube_find", label: "YouTube Finder", icon: Video },
+  // fork(course_workspaces) end
 ];
 
 export interface CapabilityDef {
@@ -79,6 +87,9 @@ export const CHAT_CAPABILITIES: ChatCapabilityDef[] = [
       "paper_search",
       "imagegen",
       "videogen",
+      // fork(course_workspaces) start
+      "youtube_find",
+      // fork(course_workspaces) end
     ],
     defaultTools: [],
   },
@@ -105,6 +116,9 @@ export const CHAT_CAPABILITIES: ChatCapabilityDef[] = [
       "paper_search",
       "imagegen",
       "videogen",
+      // fork(course_workspaces) start
+      "youtube_find",
+      // fork(course_workspaces) end
     ],
     defaultTools: [],
   },
@@ -159,6 +173,9 @@ export const CHAT_CAPABILITIES: ChatCapabilityDef[] = [
       "paper_search",
       "imagegen",
       "videogen",
+      // fork(course_workspaces) start
+      "youtube_find",
+      // fork(course_workspaces) end
     ],
     defaultTools: [],
     // Not offered in Home's action menu: it is the Mastery workspace's own

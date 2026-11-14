@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): add youtube_find readiness labels.
 """Value-free capability readiness matrix for the Settings overview.
 
 The matrix deliberately exposes identities, booleans, and stable reason codes
@@ -155,6 +156,9 @@ _TOOL_LABELS = {
     "geogebra_analysis": "GeoGebra tool",
     "imagegen": "Image generation tool",
     "videogen": "Video generation tool",
+    # fork(course_workspaces) start
+    "youtube_find": "YouTube finder tool",
+    # fork(course_workspaces) end
 }
 
 #: Row labels this module writes itself, as opposed to names that come from
@@ -180,6 +184,9 @@ TRANSLATABLE_ROW_LABELS: frozenset[str] = frozenset(
         "GeoGebra tool",
         "Image generation tool",
         "Video generation tool",
+        # fork(course_workspaces) start
+        "YouTube finder tool",
+        # fork(course_workspaces) end
         "Selected parser",
         "Knowledge bases",
         "Native YouTube",

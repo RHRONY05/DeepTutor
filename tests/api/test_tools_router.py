@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): include youtube_find in toggleable tools test.
 from __future__ import annotations
 
 from types import SimpleNamespace
@@ -89,6 +90,9 @@ async def test_list_builtin_tools_marks_toggleable_set(
         "geogebra_analysis",
         "imagegen",
         "videogen",
+        # fork(course_workspaces) start
+        "youtube_find",
+        # fork(course_workspaces) end
     }
 
     # Locked-on (non-toggleable, non-coming-soon) tools always report

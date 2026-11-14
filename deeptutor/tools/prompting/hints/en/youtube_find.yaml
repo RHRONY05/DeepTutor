@@ -1,0 +1,7 @@
+# Added in the RH.RONY fork of DeepTutor (Apache-2.0). Not part of upstream.
+short_description: "Search YouTube for educational videos and lectures with verified captions."
+when_to_use: "Use when the student asks for a video, or when a visual lecture or tutorial would help explain a concept."
+input_format: "Topic to learn (e.g. 'A* search algorithm', 'eigenvalues and eigenvectors')."
+guideline: "Checks captions before recommending; always tell the student why each video is recommended and where to start."
+note: "Prefers videos from recognized educational channels and verifies captions before recommendation."
+phase: "expansion"

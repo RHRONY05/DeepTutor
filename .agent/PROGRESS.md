@@ -9,9 +9,9 @@
 | | |
 |---|---|
 | **Phase** | Course workspaces (V7+) in progress |
-| **Next task** | V11 instructions panel, V13 YouTube finder (agy running), then V14, V15 |
+| **Next task** | V11 instructions panel, then V15 final check (V14 deferred) |
 | **Blocked on** | — |
-| **Last updated** | 2026-11-14 by Claude (orchestrating agy) |
+| **Last updated** | 2026-11-14 by Antigravity (V13 done) |
 
 ## Human steps
 Things only Rony can do. Agents add to this list; Rony ticks them.
@@ -75,3 +75,9 @@ Did: plan (10-COURSE-WORKSPACES, V7–V15). V7 exam-groups backend + `/api/cours
 Tests: tests/fork 98 ✅, notes/co_writer/capabilities/tools/question/research suites ✅, tsc ✅, eslint 0 errors (i18n warnings). tests/modules failures are environmental (app running / WinError 87).
 Live: Courses page, group create/topics/upload/tree in the browser ✅; chat "I have ZZ Test group…" → read_skill exam-prep → exam_groups → workspace_read → ask_user prerequisite checklist ✅.
 Problems: "Study for this exam" prefill is lost in dev mode (React StrictMode double effect, same for upstream's Settings hand-off); check in the production build.
+
+### 2026-11-14 — Antigravity — V13 YouTube finder tool
+Did: Built `deeptutor/tools/youtube_find.py` (`YouTubeFindTool(BaseTool)`) with web search query generation, candidate extraction and deduplication, concurrent caption resolution (4 sem, 25s timeout), transcript keyword and caption window scoring, duration sanity band, known educator bonus, shorts/clickbait penalty, timestamped jump URLs, and compact Markdown rendering with unverified candidate tracking. Registered tool in `core.json` (order 103), `deeptutor/tools/builtin/__init__.py`, `readiness.py`, and `web/features/capabilities/presentation.tsx`. Added en/zh prompt hints and localization strings.
+Tests: ruff ✅ unit ✅ (13 passed in `tests/fork/test_youtube_find.py`, 358 passed in `tests/tools`, 119 passed in `tests/fork`, 6 passed in `tests/api/test_tools_router.py`).
+Commits: None (per instruction).
+Next: V11 instructions panel, V15 final check.

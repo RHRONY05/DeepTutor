@@ -63,6 +63,10 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `deeptutor/agents/question/pipeline.py`, `deeptutor/agents/research/pipeline.py` | modified | Course instructions reach quiz generation and Deep Research prompts |
 | `web/components/courses/CourseInstructionsPanel.tsx` | added | Instructions panel: default persona, course instructions, exam-prep skill, base prompt |
 | `deeptutor/services/session/turns/executor.py` | modified | A course's default persona applies when the chat picked none |
+| `deeptutor/tools/youtube_find.py`, `deeptutor/tools/prompting/hints/{en,zh}/youtube_find.yaml` | added | `youtube_find`: YouTube lectures checked by their captions, with start timestamps |
+| `deeptutor/tools/builtin/__init__.py`, `deeptutor/tools/__init__.py`, `deeptutor/i18n/metadata_i18n.py`, `deeptutor/services/config/readiness.py` | modified | `youtube_find` is a user-toggleable built-in tool |
+| `web/features/capabilities/presentation.tsx`, `web/locales/{en,zh}/app.json` | modified | "YouTube Finder" in the tool picker (JSON locales carry no comment marker) |
+| `tests/api/test_tools_router.py` | modified | Toggleable tool list includes `youtube_find` |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings

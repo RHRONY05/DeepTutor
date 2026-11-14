@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): add youtube_find tool description.
 """Localized display metadata for built-in tools and capabilities."""
 
 from __future__ import annotations
@@ -78,6 +79,12 @@ _TOOL_DESCRIPTIONS: dict[str, dict[str, str]] = {
         "en": "Generate short videos from a text prompt with the configured model.",
         "zh": "用已配置的模型，根据文字描述生成短视频。",
     },
+    # fork(course_workspaces) start
+    "youtube_find": {
+        "en": "Search YouTube for educational videos and lectures with checked captions.",
+        "zh": "搜索带有字幕验证的 YouTube 教学视频与课程。",
+    },
+    # fork(course_workspaces) end
 }
 
 
