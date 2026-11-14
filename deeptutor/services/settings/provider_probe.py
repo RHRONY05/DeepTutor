@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): CLI-login providers list models without a URL
 """Read-only provider connectivity and model discovery, without a model invocation."""
 
 from __future__ import annotations
@@ -190,6 +191,43 @@ async def probe_search_provider(
         return {"status": "http_error", "models": []}
 
 
+# fork(antigravity_acp) start
+async def _probe_cli_login_provider(binding: str) -> dict | None:
+    """Claude Code / Antigravity sign in through their local CLI: no URL or key.
+
+    Lists models from the CLI itself (no inference call). Returns ``None``
+    for every other binding so the normal URL probe runs.
+    """
+    from deeptutor.services.provider_registry import canonical_provider_name
+
+    canonical = canonical_provider_name(binding)
+    if canonical == "claude_code":
+        from deeptutor.services.llm.provider_core.claude_code_provider import (
+            fetch_claude_code_catalog as fetch_catalog,
+        )
+    elif canonical == "antigravity_acp":
+        from deeptutor.services.llm.provider_core.antigravity_acp_provider import (
+            fetch_antigravity_catalog as fetch_catalog,
+        )
+    else:
+        return None
+    try:
+        rows = await fetch_catalog()
+    except Exception:  # noqa: BLE001
+        return {"status": "unavailable", "models": []}
+    models = [
+        {"id": str(row["id"]).split("/", 1)[-1], "services": ["llm"]}
+        for row in rows
+        if row.get("id") and not str(row["id"]).endswith("/default")
+    ]
+    return {
+        "status": "connected",
+        "models": models,
+        "capabilities": [{"category": "llm", "evidence": "metadata"}],
+    }
+# fork(antigravity_acp) end
+
+
 async def probe_provider(
     binding: str,
     base_url: str,
@@ -206,6 +244,11 @@ async def probe_provider(
     """
     if binding == "volcengine_speech":
         return {"status": "unavailable", "models": []}
+    # fork(antigravity_acp) start
+    cli_login = await _probe_cli_login_provider(binding)
+    if cli_login is not None:
+        return cli_login
+    # fork(antigravity_acp) end
     base_url = base_url.strip().rstrip("/")
     try:
         parsed = urlsplit(base_url)

@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp agent-loop adapter
 """OpenAI-compatible client factory and completion kwargs.
 
 Lifted from chat's pipeline so any capability that wants a streaming LLM call
@@ -60,6 +61,9 @@ _NATIVE_TOOL_BLOCKED_BINDINGS: frozenset[str] = frozenset(
 # adapter-routed but deliberately excluded from this set.
 _NATIVE_TOOL_BACKENDS: frozenset[str] = frozenset(
     {"anthropic", "openai_codex", "codebuddy", "claude_code"}
+    # fork(antigravity_acp) start
+    | {"antigravity_acp"}
+    # fork(antigravity_acp) end
 )
 _AGENTIC_CLIENT_POOL_MAXSIZE = 2
 _agentic_client_pool: "OrderedDict[tuple[Any, ...], Any]" = OrderedDict()
@@ -364,6 +368,16 @@ def _build_claude_code_adapter(config: LLMClientConfig, spec: Any) -> Any:
     return _ProviderOpenAIAdapter(ClaudeCodeProvider(default_model=config.model or None))
 
 
+# fork(antigravity_acp) start
+def _build_antigravity_acp_adapter(config: LLMClientConfig, spec: Any) -> Any:
+    from deeptutor.services.llm.provider_core.antigravity_acp_provider import (
+        AntigravityAcpProvider,
+    )
+
+    return _ProviderOpenAIAdapter(AntigravityAcpProvider(default_model=config.model or None))
+# fork(antigravity_acp) end
+
+
 def _build_direct_openai_adapter(config: LLMClientConfig, spec: Any) -> Any:
     from deeptutor.services.llm.provider_core import OpenAICompatProvider
 
@@ -385,6 +399,9 @@ _NATIVE_ADAPTER_BUILDERS: dict[str, Callable[[LLMClientConfig, Any], Any]] = {
     "github_copilot": _build_copilot_adapter,
     "codebuddy": _build_codebuddy_adapter,
     "claude_code": _build_claude_code_adapter,
+    # fork(antigravity_acp) start
+    "antigravity_acp": _build_antigravity_acp_adapter,
+    # fork(antigravity_acp) end
 }
 
 

@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp is owner-bound
 """Server-side model grant resolution and redacted model views.
 
 Grants carry LLM assignments only (grant v2): embedding and search always
@@ -54,6 +55,9 @@ def _model_by_id(profile: dict[str, Any], model_id: str) -> dict[str, Any] | Non
 #: and there is nowhere for such a profile to acquire the flag. Binding is the
 #: durable fact, so it decides too.
 OWNER_BOUND_BINDINGS = frozenset({"openai_codex", "codebuddy", "github_copilot", "claude_code"})
+# fork(antigravity_acp) start
+OWNER_BOUND_BINDINGS = OWNER_BOUND_BINDINGS | {"antigravity_acp"}
+# fork(antigravity_acp) end
 
 
 def is_owner_bound(profile: dict[str, Any]) -> bool:

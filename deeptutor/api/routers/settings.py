@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp needs no base URL; model catalog branch
 """
 Settings API Router
 ===================
@@ -2036,6 +2037,53 @@ async def test_provider_connection(payload: ProviderProbePayload):
     )
 
 
+# fork(antigravity_acp) start
+class QuickConnectPayload(BaseModel):
+    provider: str
+
+
+@router.post("/quick-connect")
+async def quick_connect_subscription(payload: QuickConnectPayload):
+    """Connect Claude Code or Antigravity in one step and make it the chat model."""
+    _require_settings_admin()
+    from deeptutor.services.provider_registry import canonical_provider_name
+    from deeptutor.services.settings.provider_probe import _probe_cli_login_provider
+    from deeptutor.services.settings.quick_connect import (
+        QUICK_CONNECT,
+        apply_quick_connect,
+        cli_available,
+    )
+
+    binding = canonical_provider_name((payload.provider or "").strip().lower())
+    if binding not in QUICK_CONNECT:
+        raise HTTPException(status_code=400, detail="Unsupported provider.")
+    if not cli_available(binding):
+        raise HTTPException(status_code=400, detail=QUICK_CONNECT[binding]["missing"])
+    probe = await _probe_cli_login_provider(binding) or {}
+    model_ids = [str(m.get("id")) for m in probe.get("models", []) if m.get("id")]
+    service = get_model_catalog_service()
+    draft_service = get_settings_draft_service()
+    selected: dict[str, str] = {}
+
+    def mutate(catalog: dict[str, Any]) -> None:
+        selected.update(apply_quick_connect(catalog, binding, model_ids))
+
+    with _runtime_catalog_write():
+        catalog = service.update(mutate)
+    # Keep a pending draft in step, so a later "Apply changes" doesn't drop it.
+    stored = draft_service.load()
+    if isinstance(stored.get("catalog"), dict):
+        apply_quick_connect(stored["catalog"], binding, model_ids)
+        draft_service.save(stored)
+    return {
+        "catalog": redact_catalog_secrets(catalog),
+        "connected": {"provider": binding, **selected},
+    }
+
+
+# fork(antigravity_acp) end
+
+
 @router.post("/fetch-models")
 async def fetch_models_from_provider(payload: FetchModelsPayload):
     """List selectable model IDs using the provider's own authentication.
@@ -2052,7 +2100,7 @@ async def fetch_models_from_provider(payload: FetchModelsPayload):
     binding = (payload.binding or "").strip().lower() or "openai"
     canonical = canonical_provider_name(binding)
     is_copilot = canonical == "github_copilot"
-    if not base_url and canonical not in {"codebuddy", "claude_code"} and not is_copilot:
+    if not base_url and canonical not in {"codebuddy", "claude_code", "antigravity_acp"} and not is_copilot:  # fork(antigravity_acp)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="base_url is required for this provider.",
@@ -2079,6 +2127,14 @@ async def fetch_models_from_provider(payload: FetchModelsPayload):
         )
 
         return {"models": await fetch_claude_code_catalog()}
+    # fork(antigravity_acp) start
+    if canonical == "antigravity_acp":
+        from deeptutor.services.llm.provider_core.antigravity_acp_provider import (
+            fetch_antigravity_catalog,
+        )
+
+        return {"models": await fetch_antigravity_catalog()}
+    # fork(antigravity_acp) end
 
     try:
         model_ids = await fetch_llm_models(binding, base_url, api_key, api_format or "auto")

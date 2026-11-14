@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp backend branch
 """Factory for services-layer provider runtime objects."""
 
 from __future__ import annotations
@@ -117,6 +118,14 @@ def _build_runtime_provider(
         from deeptutor.services.llm.provider_core.claude_code_provider import ClaudeCodeProvider
 
         provider = ClaudeCodeProvider(default_model=llm_config.model)
+    # fork(antigravity_acp) start
+    elif backend == "antigravity_acp":
+        from deeptutor.services.llm.provider_core.antigravity_acp_provider import (
+            AntigravityAcpProvider,
+        )
+
+        provider = AntigravityAcpProvider(default_model=llm_config.model)
+    # fork(antigravity_acp) end
     elif backend == "azure_openai":
         from deeptutor.services.llm.provider_core.azure_openai_provider import AzureOpenAIProvider
 

@@ -1,4 +1,5 @@
 "use client";
+// Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp is a CLI-login binding
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
@@ -86,7 +87,8 @@ const API_FORMAT_HINTS: Record<string, string> = {
 const LLM_SHAPED = new Set<ServiceName>(["llm", "task"]);
 // LLM bindings that list their models from a local CLI login: no base URL,
 // no API key, and the model list comes from "Sync models".
-const CLI_LOGIN_BINDINGS = new Set(["codebuddy", "claude_code"]);
+// fork(antigravity_acp): antigravity_acp added
+const CLI_LOGIN_BINDINGS = new Set(["codebuddy", "claude_code", "antigravity_acp"]);
 
 const SERVICE_LABEL: Record<ServiceName, string> = {
   llm: "LLM",

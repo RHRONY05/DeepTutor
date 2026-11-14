@@ -1,3 +1,4 @@
+// Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp icon
 /** Provider presentation only. IDs, protocols and saved account names stay intact.
  * Asset provenance is recorded in public/provider-icons/sources.json. */
 export type ProviderIconSpec = { file: string; mono?: boolean; darkFile?: string };
@@ -6,6 +7,8 @@ export const PROVIDER_ICONS: Readonly<Record<string, ProviderIconSpec>> = {
   aliyun: { file: "bailian-color.svg" },
   aliyun_iqs: { file: "alibabacloud-color.svg" },
   anthropic: { file: "anthropic.svg", mono: true },
+  // fork(antigravity_acp)
+  antigravity_acp: { file: "gemini-color.svg" },
   api_route: { file: "api-route.png" },
   atlascloud: { file: "atlascloud.svg", mono: true },
   azure_openai: { file: "azure-color.svg" },

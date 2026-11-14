@@ -1,4 +1,5 @@
 "use client";
+// Modified in the RH.RONY fork (Apache-2.0 §4b): subscription connect card
 
 import { scrollToSettingsElement } from "@/features/settings/navigation/settings-scroll";
 import Tooltip from "@/shared/ui/Tooltip";
@@ -37,6 +38,8 @@ import { ProviderServices } from "./ProviderServices";
 import { AddProviderPanel, ProviderProtocol, type CustomProviderInput } from "./AddProviderPanel";
 import { CodexOAuthCard } from "./CodexOAuthCard";
 import { CodeBuddyAuthCard } from "./CodeBuddyAuthCard";
+// fork(antigravity_acp)
+import { SubscriptionConnectCard } from "./SubscriptionConnectCard";
 import { stringifyExtraHeaders, subPanelClass } from "./shared";
 import {
   WorkspaceDetailEmpty,
@@ -195,6 +198,8 @@ export function ProvidersWorkspace() {
     );
   return (
     <div className="space-y-5">
+      {/* fork(antigravity_acp): one-click subscription sign-ins */}
+      <SubscriptionConnectCard />
       <WorkspaceSplit
         rail={
           <WorkspaceRail

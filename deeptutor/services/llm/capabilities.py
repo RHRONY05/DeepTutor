@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp capabilities and session scope
 """
 Provider Capabilities
 =====================
@@ -103,6 +104,16 @@ PROVIDER_CAPABILITIES: dict[str, dict[str, object]] = {
         "system_in_messages": True,
         "has_thinking_tags": False,
     },
+    # fork(antigravity_acp) start
+    "antigravity_acp": {
+        "supports_response_format": False,
+        "supports_streaming": True,
+        "supports_tools": True,
+        "supports_vision": False,
+        "system_in_messages": True,
+        "has_thinking_tags": False,
+    },
+    # fork(antigravity_acp) end
     "claude_code": {
         "supports_response_format": False,
         "supports_streaming": True,
@@ -722,6 +733,9 @@ def get_effective_temperature(
 #: rather than tested inline: the chat loop and the explore capability both
 #: need it, and neither should have to name a provider to run a turn.
 SESSION_SCOPED_BINDINGS: frozenset[str] = frozenset({"codebuddy", "openai_codex", "claude_code"})
+# fork(antigravity_acp) start
+SESSION_SCOPED_BINDINGS = SESSION_SCOPED_BINDINGS | {"antigravity_acp"}
+# fork(antigravity_acp) end
 
 
 def threads_session_id(binding: str | None) -> bool:

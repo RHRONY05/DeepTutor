@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp model listing
 """Unified services-layer LLM factory."""
 
 from __future__ import annotations
@@ -743,6 +744,13 @@ async def fetch_models(
         from .provider_core.claude_code_provider import fetch_claude_code_models
 
         return await fetch_claude_code_models()
+
+    # fork(antigravity_acp) start
+    if canonical_provider_name(binding) == "antigravity_acp":
+        from .provider_core.antigravity_acp_provider import fetch_antigravity_models
+
+        return await fetch_antigravity_models()
+    # fork(antigravity_acp) end
 
     if is_local_llm_server(base_url):
         from . import local_provider

@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): antigravity_acp provider spec and aliases
 """Provider registry for DeepTutor LLM routing.
 
 Single source of truth for provider metadata. Adding a new provider:
@@ -151,6 +152,11 @@ PROVIDER_ALIASES = {
     "workbuddy": "codebuddy",
     "claude-code": "claude_code",
     "claudecode": "claude_code",
+    # fork(antigravity_acp) start
+    "antigravity-acp": "antigravity_acp",
+    "antigravity": "antigravity_acp",
+    "agy": "antigravity_acp",
+    # fork(antigravity_acp) end
     "lm-studio": "lm_studio",
     "atlas": "atlascloud",
     "atlas_cloud": "atlascloud",
@@ -522,6 +528,18 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         strip_model_prefix=True,
         supports_stream_options=False,
     ),
+    # fork(antigravity_acp) start
+    ProviderSpec(
+        name="antigravity_acp",
+        keywords=("antigravity-acp", "antigravity_acp", "agy"),
+        env_key="",
+        display_name="Antigravity (Google AI Pro subscription)",
+        backend="antigravity_acp",
+        is_oauth=True,
+        strip_model_prefix=True,
+        supports_stream_options=False,
+    ),
+    # fork(antigravity_acp) end
     ProviderSpec(
         name="deepseek",
         keywords=("deepseek",),

@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): lazy export of AntigravityAcpProvider
 """Services-layer provider runtime with lazy SDK-backed implementations."""
 
 from __future__ import annotations
@@ -37,6 +38,9 @@ _LAZY_TYPES = {
     "AnthropicProvider": ("anthropic_provider", "AnthropicProvider"),
     "AzureOpenAIProvider": ("azure_openai_provider", "AzureOpenAIProvider"),
     "ClaudeCodeProvider": ("claude_code_provider", "ClaudeCodeProvider"),
+    # fork(antigravity_acp) start
+    "AntigravityAcpProvider": ("antigravity_acp_provider", "AntigravityAcpProvider"),
+    # fork(antigravity_acp) end
     "CodeBuddyHTTPProvider": ("codebuddy_http_provider", "CodeBuddyHTTPProvider"),
     "CodeBuddyProvider": ("codebuddy_provider", "CodeBuddyProvider"),
     "GitHubCopilotProvider": ("github_copilot_provider", "GitHubCopilotProvider"),
