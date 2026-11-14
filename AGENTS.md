@@ -1,3 +1,44 @@
+<!-- Modified in the RH.RONY fork (Apache-2.0 §4b): fork block added at the top. Upstream text below is unchanged. -->
+<!-- fork(antigravity_acp) start -->
+# Fork: start here (RH.RONY's DeepTutor)
+
+This checkout is **RH.RONY's long-lived fork** of HKUDS/DeepTutor (see [FORK_NOTICE.md](FORK_NOTICE.md)).
+Current fork work: an **`antigravity_acp` LLM provider**, so the tutor runs on a Google AI Pro subscription
+through the official Antigravity CLI (`agy acp`), next to upstream's built-in Claude Code provider.
+
+**Planned by** Claude. **Built by** an AI agent (Antigravity), end to end. Rony checks the result; he doesn't write code.
+
+## Read in this order
+0. [.agent/PROGRESS.md](.agent/PROGRESS.md): where the work is now (read first, update before you stop)
+1. [.agent/rules/deeptutor-fork.md](.agent/rules/deeptutor-fork.md): always-on rules (non-negotiable)
+2. [.agent/01-PRODUCT.md](.agent/01-PRODUCT.md): what the change does, user stories, out of scope
+3. [.agent/02-ARCHITECTURE.md](.agent/02-ARCHITECTURE.md): files touched, wiring, setup, fork markers
+4. [.agent/07-ACP-PROVIDER.md](.agent/07-ACP-PROVIDER.md): the provider contract and spike facts
+5. [.agent/09-TESTING.md](.agent/09-TESTING.md): unit, live integration and manual checks
+6. [.agent/08-TASKS.md](.agent/08-TASKS.md): the task list (V0 → V6)
+7. `.agent/workflows/`: `/project-config` (once), `/next-task`, `/status`, `/sync-docs`
+8. Then the upstream architecture guide below.
+
+## Key decisions (already made, do not re-open)
+| Topic | Decision |
+|---|---|
+| User | Exactly one person, local only (Windows 11). No hosting, no multi-user setup. |
+| Claude | Upstream's built-in `claude_code` provider (Agent SDK → official Claude Code CLI, Rony's own login). No code change. |
+| Gemini | New `antigravity_acp` provider driving the **unmodified** `agy acp` (ACP over stdio). Print-mode shim only if ACP breaks, and only after asking. |
+| Safety | `--sandbox`, empty temp cwd, deny all permission requests, no fs/terminal for the agent, never touch credentials or Google endpoints. |
+| Tools | Emulated with a strict JSON reply protocol (07 §4). |
+| Embeddings | No code change. Gemini `gemini-embedding-001` (free AI Studio key) or Ollama `nomic-embed-text`. |
+| Fork hygiene | New files over edits. Marked edits in upstream files. `FORK_NOTICE.md` lists every change. Upstream tests must not regress. |
+| Git | Commit locally after every task. Remote `upstream` only. **Never push.** |
+| Docs follow code | Any change updates the owning `.agent/` doc in the same commit (map in the rules). `/sync-docs` repairs drift. |
+
+## Status
+- [x] Planning + ACP spike (2026-11-14)
+- [ ] Build V0 → V6
+
+---
+<!-- fork(antigravity_acp) end -->
+
 # DeepTutor — Agent-Native Architecture
 
 ## Overview
