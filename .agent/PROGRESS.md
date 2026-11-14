@@ -27,7 +27,7 @@ Things only Rony can do. Agents add to this list; Rony ticks them.
 ## Environment facts (no secrets here!)
 | Item | Value |
 |---|---|
-| Repo | `D:\Projects\DeepTutor`, branch `main`, remote `upstream` only (HKUDS/DeepTutor @ `60fb3bdfd`, 2026-11-06, v1.7.2) |
+| Repo | `D:\Projects\DeepTutor`, branch `main`, remotes `origin` = public fork https://github.com/RHRONY05/DeepTutor (pushed 2026-11-15) and `upstream` (HKUDS/DeepTutor @ `60fb3bdfd`, 2026-11-06, v1.7.2) |
 | agy | 1.5.3 at `C:\Users\Asus\AppData\Local\agy\bin\agy` (ACP server reports 1.5.8) |
 | agy data dir | `%USERPROFILE%\.gemini\antigravity-cli\` (each ACP/print session saves a conversation `.db` here) |
 | agy account | — (human step above) |

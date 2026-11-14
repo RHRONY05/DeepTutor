@@ -29,7 +29,7 @@ through the official Antigravity CLI (`agy acp`), next to upstream's built-in Cl
 | Tools | Emulated with a strict JSON reply protocol (07 §4). |
 | Embeddings | No code change. Gemini `gemini-embedding-001` (free AI Studio key) or Ollama `nomic-embed-text`. |
 | Fork hygiene | New files over edits. Marked edits in upstream files. `FORK_NOTICE.md` lists every change. Upstream tests must not regress. |
-| Git | Commit locally after every task. Remote `upstream` only. **Never push.** |
+| Git | Commit locally after every task. Remotes: `origin` = public fork `RHRONY05/DeepTutor`, `upstream` = HKUDS. **Push to `origin` only when Rony asks.** |
 | Docs follow code | Any change updates the owning `.agent/` doc in the same commit (map in the rules). `/sync-docs` repairs drift. |
 
 ## Status

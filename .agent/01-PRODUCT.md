@@ -34,4 +34,3 @@ provider's terms.
 - Picking the Google account from inside DeepTutor. The account is whatever `agy` is signed into. See PROGRESS "Human steps".
 - The print-mode (`agy -p`) shim. Only if ACP breaks (07 §9).
 - Any other DeepTutor customisation, renaming, Docker, or the desktop build.
-- Pushing to GitHub or creating a fork there.

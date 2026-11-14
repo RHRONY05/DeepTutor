@@ -4,7 +4,7 @@
 
 ## Repo and remotes
 - Local clone: `D:\Projects\DeepTutor`, branch `main`.
-- Remote `upstream` = `https://github.com/HKUDS/DeepTutor.git`. There is **no `origin`** yet, and nothing is ever pushed until Rony creates his own GitHub repo and asks.
+- Remote `upstream` = `https://github.com/HKUDS/DeepTutor.git`. `origin` = `https://github.com/RHRONY05/DeepTutor.git` (public fork, created 2026-11-15). Push there only when Rony asks.
 - Pulling updates later: `git fetch upstream` → `git merge upstream/main` on `main`. Keep fork edits small and fenced (see "Fork markers") so merges stay easy.
 
 ## Stack (unchanged upstream)

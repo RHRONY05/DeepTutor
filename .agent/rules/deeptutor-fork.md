@@ -12,7 +12,7 @@ If a rule conflicts with a task description, the rule wins. Stop and flag it in 
   - No `print` debugging left in `deeptutor/` (use `logging`), no commented-out code.
   - Task ticked `[x]` with a one-line note. PROGRESS.md updated ("Now" table + a session-log entry). **Committed locally** with a conventional message (`feat:`, `fix:`, `test:`, `chore:`, `docs:`).
   - **Docs updated** ("Docs follow code" below).
-- Commit after every task. **Never push, never add a remote, never create a GitHub repo or fork.** Rony does that himself later.
+- Commit after every task. **Push to `origin` (public fork `RHRONY05/DeepTutor`) only when Rony asks.** Never push to `upstream`, never add other remotes or repos.
 - Before ending any session: update PROGRESS.md.
 
 ## Upstream-friendly changes (this is a long-lived fork)
