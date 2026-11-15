@@ -69,6 +69,7 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `tests/api/test_tools_router.py` | modified | Toggleable tool list includes `youtube_find` |
 | `deeptutor/agents/_shared/tool_runtime.py` | modified | Passes the chat's course id and session id to `exam_groups` |
 | `web/components/sessions/OrganizedSessionList.tsx`, `web/lib/session-api.ts` | modified | Sidebar lists course chats under their exam group |
+| `web/components/Mermaid.tsx` | modified | Mermaid node labels no longer get cut off at the bottom (chat line-height mismatch) |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings

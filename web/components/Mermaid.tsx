@@ -1,4 +1,5 @@
 "use client";
+// Modified in the RH.RONY fork (Apache-2.0 §4b): keep wrapped Mermaid labels inside their boxes
 
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -60,6 +61,12 @@ function applyMermaidTheme(mermaid: (typeof import("mermaid"))["default"]) {
       curve: "basis",
     },
     themeVariables: themeVariablesFromCss(),
+    // fork(course_workspaces) start
+    // Labels are sized with line-height 1.5, but the chat's prose styles give
+    // <p> a taller line-height, so wrapped labels overflowed and got cut off.
+    themeCSS:
+      "foreignObject p { line-height: inherit !important; margin: 0 !important; }",
+    // fork(course_workspaces) end
   });
 }
 
