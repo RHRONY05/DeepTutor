@@ -75,6 +75,9 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `scripts/fork/setup_dsa_course.py` | added | Creates the DSA course (pattern groups from the AM-300 sheet) through the API |
 | `deeptutor/tools/course_settings.py` | added | Tool: the tutor reads/changes the course instructions (with undo) and default persona |
 | `web/components/courses/useOpenInReader.ts` | added | "Lesson" opens the page in Immersive Reading (imported once, then reused); "Ask Sensei" prefills a DSA chat |
+| `deeptutor/reading/fork_lessons.py` | added | Lesson pages (algomaster.io) import as one scrolling section |
+| `deeptutor/reading/ingestion.py` | modified | Marked edit: uses `fork_lessons` before cutting a web page at its headings |
+| `web/components/reading/workspace/SourceNavigator.tsx` | modified | Marked edit: a one-section page lists its own headings in Contents |
 | `deeptutor/services/course/exam_groups.py`, `web/components/courses/*` | fork files | `practice` group type: reading list (`lessons`), per-problem links, solved / re-solve progress bars |
 | `tests/fork/` | added | Tests for the course-workspace features |
 

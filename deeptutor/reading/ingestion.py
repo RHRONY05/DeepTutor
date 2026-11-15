@@ -1,3 +1,4 @@
+# Modified in the RH.RONY fork (Apache-2.0 §4b): course lesson pages import as one scrolling section
 """Unified URL and media ingestion for Immersive Reading.
 
 Imports always create a durable catalog row first, then move through processing
@@ -260,7 +261,17 @@ class ReadingIngestionService:
             record.material_id,
             fetcher=self._image_fetcher,
         )
-        units, outline = split_markdown_by_headings(markdown)
+        # fork(course_workspaces) start
+        # Course lesson pages (e.g. AlgoMaster) stay one scrolling section; the reader
+        # then lists their headings in Contents. Other pages are cut at headings.
+        from deeptutor.reading.fork_lessons import whole_page_units
+
+        whole_page = whole_page_units(source_url, markdown)
+        if whole_page is not None:
+            units, outline = whole_page, ()
+        else:
+            units, outline = split_markdown_by_headings(markdown)
+        # fork(course_workspaces) end
         if not units:
             raise ReadingError("web source contained no readable article text")
         self.reading_store.ingest_units(

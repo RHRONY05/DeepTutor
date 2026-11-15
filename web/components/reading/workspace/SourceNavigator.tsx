@@ -1,4 +1,5 @@
 "use client";
+// Modified in the RH.RONY fork (Apache-2.0 §4b): one-section pages list their own headings
 
 import {
   BookmarkCheck,
@@ -116,9 +117,12 @@ export function SourceNavigator({
   );
   const mediaSource = mediaSourceOf(material);
   const isPdf = material?.render_mode === "pdf";
-  const reliableOutline = isPdf
+  // fork(course_workspaces) start: a one-section page (a course lesson) lists its own
+  // headings instead of a single synthesised row.
+  const reliableOutline = isPdf || unitCount === 1
     ? outline.filter((row) => !row.synthesised)
     : outline;
+  // fork(course_workspaces) end
   const pageFallback = isPdf && reliableOutline.length === 0 && unitCount > 0;
   const documentOutline: OutlineRow[] = pageFallback
     ? Array.from({ length: unitCount }, (_, index) => ({

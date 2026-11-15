@@ -120,4 +120,10 @@ Open: V14 per-course memory (deferred), Courses UI i18n, YouTube duration often 
   chat with the problem, pattern and links. New `course_settings` tool (get / update_instructions /
   undo_instructions / set_default_persona; previous text kept in fork_courses.json). Checked live: tutor
   read the settings (persona dsa-mentor, 9 bullets) without changing them. tests/fork 140 ✅.
+- Follow-up 3: lessons now read as one long page. AlgoMaster pages import as a single section
+  (`deeptutor/reading/fork_lessons.py`, marked edit in `reading/ingestion.py`); Contents lists the page's
+  headings and jumps to them (marked edit in `SourceNavigator.tsx`). Re-imported the 3 opened lessons
+  (retry endpoint). Code blocks stay out: AlgoMaster renders them from page data that may also hold
+  premium-only content, so we do not parse it; the companion writes C++ instead.
+  tests/fork + tests/reading ✅ (+9 `test_lesson_pages.py`).
 
