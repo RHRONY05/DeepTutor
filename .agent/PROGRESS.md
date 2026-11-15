@@ -114,4 +114,10 @@ Open: V14 per-course memory (deferred), Courses UI i18n, YouTube duration often 
   update without links keeps them), Courses UI shows "Read first" links, LeetCode/Lesson buttons per
   problem, solved/re-solve bars per pattern and for the whole course (300 problems). Setup script now
   refreshes existing groups and keeps progress. tests/fork 133 ✅ (+7 `test_practice_groups.py`), tsc ✅.
+- Follow-up 2: "Lesson" buttons open the AlgoMaster page inside Immersive Reading (URL import, reused
+  after the first time; text sections import, code blocks and animated walkthroughs don't); the reader's
+  companion answers from the lesson (checked: cited the section). "Ask Sensei" per problem prefills a DSA
+  chat with the problem, pattern and links. New `course_settings` tool (get / update_instructions /
+  undo_instructions / set_default_persona; previous text kept in fork_courses.json). Checked live: tutor
+  read the settings (persona dsa-mentor, 9 bullets) without changing them. tests/fork 140 ✅.
 

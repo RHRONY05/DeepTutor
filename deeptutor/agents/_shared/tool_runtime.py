@@ -1,4 +1,4 @@
-# Modified in the RH.RONY fork (Apache-2.0 §4b): pass the course workspace id to exam_groups
+# Modified in the RH.RONY fork (Apache-2.0 §4b): pass the course workspace id to exam_groups and course_settings
 """Server-owned runtime binding shared by every agentic pipeline."""
 
 from __future__ import annotations
@@ -62,6 +62,8 @@ def bind_workspace_tool_runtime(
     # fork(course_workspaces) start
     # exam_groups reads the course folder; without the id it fell back to the
     # account-wide workspace and showed another course's (or stale) groups.
+    if tool_name == "course_settings" and workspace is not None:
+        kwargs["_workspace_id"] = workspace.workspace_id
     if tool_name == "exam_groups":
         if workspace is not None:
             kwargs["_workspace_id"] = workspace.workspace_id

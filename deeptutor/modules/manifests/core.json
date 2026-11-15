@@ -153,6 +153,10 @@
       "class_path": "deeptutor.tools.exam_groups:ExamGroupsTool",
       "order": 37
     },
+    "course_settings": {
+      "class_path": "deeptutor.tools.course_settings:CourseSettingsTool",
+      "order": 104
+    },
     "imagegen": {
       "class_path": "deeptutor.tools.media_gen_tool:ImagegenTool",
       "order": 38

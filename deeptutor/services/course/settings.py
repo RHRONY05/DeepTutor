@@ -90,6 +90,34 @@ def set_course_settings(workspace_id: str, default_persona: str) -> dict[str, An
     return {"default_persona": entry["default_persona"]}
 
 
+def swap_previous_instructions(workspace_id: str, current: str) -> str | None:
+    """Store *current* as the course's previous instructions; return what was stored before.
+
+    Used by the ``course_settings`` tool: every change keeps the text it replaced, so one
+    ``undo`` restores it (and a second ``undo`` redoes).
+    """
+    path = _settings_file()
+    with _LOCK:
+        raw = _read_raw(path)
+        entry = raw.get(workspace_id)
+        if not isinstance(entry, dict):
+            entry = {}
+        before = entry.get("previous_instructions")
+        entry["previous_instructions"] = str(current)
+        raw[workspace_id] = entry
+        _write_raw(path, raw)
+    return before if isinstance(before, str) else None
+
+
+def peek_previous_instructions(workspace_id: str) -> str | None:
+    path = _settings_file()
+    with _LOCK:
+        raw = _read_raw(path)
+    entry = raw.get(workspace_id)
+    value = entry.get("previous_instructions") if isinstance(entry, dict) else None
+    return value if isinstance(value, str) else None
+
+
 def default_persona_for_current_workspace() -> str:
     """Return the default persona configured for the active workspace, or ''."""
     try:

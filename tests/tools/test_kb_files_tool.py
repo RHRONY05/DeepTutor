@@ -110,6 +110,7 @@ class TestMountGate:
             "note_tree",
             "move_note",
             "exam_groups",
+            "course_settings",
             # fork(course_workspaces) end
             "obsidian_read",
             "rag",

@@ -11,6 +11,7 @@ import {
   ExternalLink,
   GraduationCap,
   Loader2,
+  MessageCircleQuestion,
   Plus,
   Save,
   Trash2,
@@ -35,6 +36,7 @@ import {
   type TopicStatus,
 } from "@/lib/courses-api";
 import { FileTree } from "./FileTree";
+import { useOpenInReader } from "./useOpenInReader";
 
 interface ExamGroupDetailProps {
   workspaceId: string;
@@ -77,6 +79,7 @@ export function ExamGroupDetail({
   onBackToList,
 }: ExamGroupDetailProps) {
   const router = useRouter();
+  const { openInReader, busyUrl, readerError } = useOpenInReader(workspaceId);
 
   const [group, setGroup] = useState<ExamGroup | null>(null);
   const [loading, setLoading] = useState(true);
@@ -355,6 +358,19 @@ export function ExamGroupDetail({
     router.push(scopedUrl("/chat", workspaceId));
   };
 
+  // Ask Sensei: a DSA chat about one problem, with its pattern and links.
+  const handleAskSensei = (topic: ExamTopic) => {
+    if (!group) return;
+    const links = (topic.links ?? [])
+      .map((link) => `${link.label}: ${link.url}`)
+      .join("\n");
+    setPendingPrompt(
+      `Help me with "${topic.title}" from ${group.name}.\n${links}\n` +
+        `Start by asking what I've tried, then teach it with hints first.`,
+    );
+    router.push(scopedUrl("/chat", workspaceId));
+  };
+
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center py-16 text-sm text-[var(--muted-foreground)]">
@@ -415,6 +431,7 @@ export function ExamGroupDetail({
       )}
 
       {error && <InlineAlert tone="danger">{error}</InlineAlert>}
+      {readerError && <InlineAlert tone="danger">{readerError}</InlineAlert>}
 
       {/* Top Banner / Actions */}
       <div className="flex flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
@@ -566,22 +583,37 @@ export function ExamGroupDetail({
               Read first
             </h3>
             <p className="text-xs text-[var(--muted-foreground)]">
-              Lessons for this pattern. They open in your browser.
+              Click a lesson to read it here with the tutor beside you. The
+              arrow opens the original page.
             </p>
           </div>
           <div className="flex flex-col divide-y divide-[var(--border)]/30 rounded-lg border border-[var(--border)] bg-[var(--background)]">
             {(group.lessons ?? []).map((lesson) => (
-              <a
-                key={lesson.url}
-                href={lesson.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--muted)]/50"
-              >
-                <BookOpen size={13} className="shrink-0 text-[var(--muted-foreground)]" />
-                <span className="min-w-0 flex-1 truncate">{lesson.title}</span>
-                <ExternalLink size={12} className="shrink-0 text-[var(--muted-foreground)]" />
-              </a>
+              <div key={lesson.url} className="flex items-center gap-2 px-3 py-2 text-xs">
+                <button
+                  type="button"
+                  onClick={() => void openInReader(lesson.url, lesson.title)}
+                  disabled={busyUrl === lesson.url}
+                  className="flex min-w-0 flex-1 items-center gap-2 text-left font-medium text-[var(--foreground)] hover:underline"
+                  title="Read here with the tutor"
+                >
+                  {busyUrl === lesson.url ? (
+                    <Loader2 size={13} className="shrink-0 animate-spin" />
+                  ) : (
+                    <BookOpen size={13} className="shrink-0 text-[var(--muted-foreground)]" />
+                  )}
+                  <span className="truncate">{lesson.title}</span>
+                </button>
+                <a
+                  href={lesson.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Open the original page"
+                  className="rounded p-1 text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                >
+                  <ExternalLink size={12} />
+                </a>
+              </div>
             ))}
           </div>
         </div>
@@ -700,18 +732,57 @@ export function ExamGroupDetail({
                 </span>
 
                 <div className="flex shrink-0 items-center gap-2">
-                  {(topic.links ?? []).map((link) => (
-                    <a
-                      key={link.url}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-0.5 text-[11px] font-medium text-[var(--foreground)] hover:bg-[var(--muted)]"
+                  {(topic.links ?? []).map((link) =>
+                    link.label === "Lesson" ? (
+                      <span key={link.url} className="inline-flex items-center">
+                        <button
+                          type="button"
+                          onClick={() => void openInReader(link.url, topic.title)}
+                          disabled={busyUrl === link.url}
+                          title="Read the lesson here with the tutor"
+                          className="inline-flex items-center gap-1 rounded-l-md border border-[var(--border)] px-2 py-0.5 text-[11px] font-medium text-[var(--foreground)] hover:bg-[var(--muted)]"
+                        >
+                          {busyUrl === link.url ? (
+                            <Loader2 size={10} className="animate-spin" />
+                          ) : (
+                            <BookOpen size={10} />
+                          )}
+                          Lesson
+                        </button>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Open the original lesson page"
+                          className="rounded-r-md border border-l-0 border-[var(--border)] px-1.5 py-0.5 text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                        >
+                          <ExternalLink size={10} />
+                        </a>
+                      </span>
+                    ) : (
+                      <a
+                        key={link.url}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-0.5 text-[11px] font-medium text-[var(--foreground)] hover:bg-[var(--muted)]"
+                      >
+                        {link.label}
+                        <ExternalLink size={10} />
+                      </a>
+                    ),
+                  )}
+                  {practice && (
+                    <button
+                      type="button"
+                      onClick={() => handleAskSensei(topic)}
+                      title="Open a chat where the tutor teaches this problem"
+                      className="inline-flex items-center gap-1 rounded-md border border-[var(--primary)]/40 bg-[var(--primary)]/10 px-2 py-0.5 text-[11px] font-medium text-[var(--primary)] hover:bg-[var(--primary)]/20"
                     >
-                      {link.label}
-                      <ExternalLink size={10} />
-                    </a>
-                  ))}
+                      <MessageCircleQuestion size={10} />
+                      Ask Sensei
+                    </button>
+                  )}
                   <select
                     value={topic.status}
                     onChange={(e) =>

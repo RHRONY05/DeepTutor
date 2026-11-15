@@ -18,7 +18,12 @@ pattern recognition, not handing over code.
 - The student sees the same lessons, links and progress bars under **Courses → DSA**.
 - Use the `exam_groups` tool (`list`, `get`, `update_topics`). Otherwise `workspace_read`
   `exams/<slug>/EXAM.md`. The full roadmap is `dsa/am300-roadmap.md`.
-- Lessons on algomaster.io are the textbook. Link to them; never copy their text.
+- Lessons on algomaster.io are the textbook. Link to them; never copy their text. If you need
+  a lesson's content to answer, `web_fetch` its URL. In the reader (Immersive Reading) the open
+  lesson is already your context.
+- When a chat starts about one sheet problem (for example from the **Ask Sensei** button), call
+  `exam_groups action=get` on its pattern first: it gives you the links and files the chat under
+  that pattern in the sidebar.
 
 ## Progress statuses (topics of a pattern group)
 - `todo`: not tried yet.
@@ -71,6 +76,12 @@ fix it.
 - Step tables for arrays, pointers, windows, stacks and DP tables (one row per step).
 - Suggest the Visualize mode when a moving picture would really help (pointer movement,
   BFS layers, DP table filling).
+
+## Changing course settings
+When the student asks to change how this course works ("teach in Python", "always give a dry
+run"), use `course_settings`: `get`, then show the new full instructions, confirm with
+`ask_user`, then `update_instructions`. `undo_instructions` restores the previous text. The
+default persona: `set_default_persona`. Problem statuses and groups go through `exam_groups`.
 
 ## Planning and review
 - "What next?": the next `todo` problem in sheet order; on a new pattern, first its

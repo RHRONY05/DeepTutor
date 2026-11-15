@@ -137,6 +137,7 @@ def test_exclusive_compose_drops_builtins_but_keeps_coexisting_rag() -> None:
         "note_tree",
         "move_note",
         "exam_groups",
+        "course_settings",
         # fork(course_workspaces) end
         "consult_subagent",
         "rag",
@@ -166,6 +167,7 @@ def test_exclusive_compose_pure_subagent_mounts_no_rag() -> None:
         "note_tree",
         "move_note",
         "exam_groups",
+        "course_settings",
         # fork(course_workspaces) end
         "consult_subagent",
         "ask_user",

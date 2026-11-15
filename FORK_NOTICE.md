@@ -58,7 +58,7 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `deeptutor/skills/builtin/exam-prep/SKILL.md` | added | Exam-prep teaching playbook (prerequisites first, PYQs, skipped list) |
 | `deeptutor/services/course/templates/exam_prep_instructions.md` | added | Default course instructions template |
 | `deeptutor/tools/exam_groups.py` | added | `exam_groups` tool: list/get/create/update groups and topic progress from chat |
-| `deeptutor/modules/manifests/core.json` | modified | Registers `exam_groups` (JSON, no comment marker) |
+| `deeptutor/modules/manifests/core.json` | modified | Registers `exam_groups` and `course_settings` (JSON, no comment marker) |
 | `deeptutor/services/course/instructions.py` | added | Formats course instructions for non-chat pipelines |
 | `deeptutor/agents/question/pipeline.py`, `deeptutor/agents/research/pipeline.py` | modified | Course instructions reach quiz generation and Deep Research prompts |
 | `web/components/courses/CourseInstructionsPanel.tsx` | added | Instructions panel: default persona, course instructions, exam-prep skill, base prompt |
@@ -73,6 +73,8 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `deeptutor/skills/builtin/dsa-tutor/SKILL.md` | added | DSA tutor playbook: hint ladder, lesson format, progress statuses |
 | `deeptutor/services/course/templates/dsa_instructions.md`, `dsa_mentor_persona.md` | added | DSA course instructions and the "dsa-mentor" persona |
 | `scripts/fork/setup_dsa_course.py` | added | Creates the DSA course (pattern groups from the AM-300 sheet) through the API |
+| `deeptutor/tools/course_settings.py` | added | Tool: the tutor reads/changes the course instructions (with undo) and default persona |
+| `web/components/courses/useOpenInReader.ts` | added | "Lesson" opens the page in Immersive Reading (imported once, then reused); "Ask Sensei" prefills a DSA chat |
 | `deeptutor/services/course/exam_groups.py`, `web/components/courses/*` | fork files | `practice` group type: reading list (`lessons`), per-problem links, solved / re-solve progress bars |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
