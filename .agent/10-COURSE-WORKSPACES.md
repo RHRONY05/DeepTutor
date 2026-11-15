@@ -110,3 +110,10 @@ Default persona applies when a chat in that workspace has no persona chosen.
 - Sidebar: Courses link in `CategoryNavigation.tsx` + `page-sections.ts` (`nav-entries.ts` keeps the policy entry).
 - Sidebar: chats that used `exam_groups` get/create/update carry `exam_group`/`exam_group_name` session preferences and are listed under that group (`OrganizedSessionList.tsx`). The runtime passes `exam_groups` the course id and session id (`tool_runtime.py`).
 - V14 per-course memory: deferred (see 08).
+
+## DSA practice course (2026-11-15)
+A course can also be a practice track. `scripts/fork/setup_dsa_course.py` creates "DSA": each group is a
+pattern of the AM-300 sheet (type `other`, no date), its topics are the problems (`todo` / `learning` =
+studied or hinted, re-solve due / `known` / `skipped`), its syllabus lists the "Read first" lessons and
+LeetCode + lesson links. The `dsa-tutor` builtin skill teaches (hint ladder, slow→fast approaches, dry run,
+trigger) and updates topics; the course instructions tell the tutor not to use `exam-prep` there.

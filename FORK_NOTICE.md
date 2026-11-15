@@ -70,6 +70,9 @@ Modified upstream files carry a `Modified in the RH.RONY fork` header line, and 
 | `deeptutor/agents/_shared/tool_runtime.py` | modified | Passes the chat's course id and session id to `exam_groups` |
 | `web/components/sessions/OrganizedSessionList.tsx`, `web/lib/session-api.ts` | modified | Sidebar lists course chats under their exam group |
 | `web/components/Mermaid.tsx` | modified | Mermaid node labels no longer get cut off at the bottom (chat line-height mismatch) |
+| `deeptutor/skills/builtin/dsa-tutor/SKILL.md` | added | DSA tutor playbook: hint ladder, lesson format, progress statuses |
+| `deeptutor/services/course/templates/dsa_instructions.md`, `dsa_mentor_persona.md` | added | DSA course instructions and the "dsa-mentor" persona |
+| `scripts/fork/setup_dsa_course.py` | added | Creates the DSA course (pattern groups from the AM-300 sheet) through the API |
 | `tests/fork/` | added | Tests for the course-workspace features |
 
 ## Test-only settings

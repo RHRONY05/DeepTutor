@@ -11,7 +11,7 @@
 | **Phase** | Course workspaces built (V7–V13, V15); V14 deferred |
 | **Next task** | — (open: per-course memory V14, Courses UI i18n, YouTube duration) |
 | **Blocked on** | — |
-| **Last updated** | 2026-11-15 by Claude (exam-group scope fix, sidebar groups) |
+| **Last updated** | 2026-11-15 by Claude (Mermaid labels, DSA course) |
 
 ## Human steps
 Things only Rony can do. Agents add to this list; Rony ticks them.
@@ -95,3 +95,17 @@ Open: V14 per-course memory (deferred), Courses UI i18n, YouTube duration often 
   Stray folder moved out; its topic list merged into the real CT-04.
 - The tool tags the chat (`exam_group`, `exam_group_name` session preferences); the sidebar lists tagged chats
   under the group's name. Instructions panel: persona select and header actions no longer overflow.
+
+### 2026-11-15 — Claude — Mermaid labels + DSA course
+- Mermaid: chat prose gave `<p>` a taller line-height than Mermaid measured, so wrapped node labels were cut
+  off. `themeCSS` resets it inside `foreignObject` (`web/components/Mermaid.tsx`). Checked live: all 8 boxes fit.
+- DSA course: `scripts/fork/setup_dsa_course.py` builds course "DSA" from `data/user/dsa/am300.json`
+  (AlgoMaster AM-300: titles and links only, git-ignored): instructions, persona `dsa-mentor` (course default),
+  builtin skill `dsa-tutor`, 60 groups ("00 · Before you start", "01 · Arrays" … "59 · Line Sweep") whose topics
+  are the problems, and `dsa/am300-roadmap.md` in the course folder. Re-running keeps progress.
+  Practice runs on LeetCode (links), no compiler here. AlgoMaster blocks iframes, so lessons open as links.
+- Live: hint request → read `dsa-tutor`, gave a hint without the solution; "solved with the hint" → topic set
+  to `learning`; chat filed under "03 · Bit Manipulation" in the sidebar. Test progress reset afterwards.
+- Tests: tests/fork 126 ✅ (+4 in `test_dsa_course.py`), skill service tests ✅.
+- Open: re-solve dates (statuses only for now), a "due today" view, a step-by-step algorithm player,
+  PDF/image text for course files.
