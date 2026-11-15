@@ -9,15 +9,27 @@ export type ExamType =
   | "mid_term"
   | "term_final"
   | "assignment"
+  | "practice"
   | "other";
 
 export type ExamStatus = "planned" | "preparing" | "done";
 
 export type TopicStatus = "todo" | "learning" | "known" | "skipped";
 
+export interface TopicLink {
+  label: string;
+  url: string;
+}
+
 export interface ExamTopic {
   title: string;
   status: TopicStatus;
+  links?: TopicLink[];
+}
+
+export interface GroupLesson {
+  title: string;
+  url: string;
 }
 
 export interface ExamProgress {
@@ -33,6 +45,7 @@ export interface ExamGroup {
   status: ExamStatus;
   syllabus: string;
   topics: ExamTopic[];
+  lessons?: GroupLesson[];
   progress: ExamProgress;
   file_count: number;
   updated_at: string;
@@ -66,6 +79,7 @@ export interface UpdateExamGroupPayload {
   status?: ExamStatus;
   syllabus?: string;
   topics?: ExamTopic[];
+  lessons?: GroupLesson[];
 }
 
 export interface FileTreeNode {

@@ -47,6 +47,12 @@ const TYPE_CONFIG: Record<
     text: "text-emerald-700 dark:text-emerald-300",
     border: "border-emerald-500/20",
   },
+  practice: {
+    label: "Practice",
+    bg: "bg-teal-500/10",
+    text: "text-teal-700 dark:text-teal-300",
+    border: "border-teal-500/20",
+  },
   other: {
     label: "Exam",
     bg: "bg-zinc-500/10",

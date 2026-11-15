@@ -105,8 +105,8 @@ class ExamGroupsTool(BaseTool):
                 ToolParameter(
                     name="type",
                     type="string",
-                    description="Exam type: class_test, quiz, viva, mid_term, term_final, assignment, or other.",
-                    enum=["class_test", "quiz", "viva", "mid_term", "term_final", "assignment", "other"],
+                    description="Exam type: class_test, quiz, viva, mid_term, term_final, assignment, practice (a self-study track such as a DSA pattern), or other.",
+                    enum=["class_test", "quiz", "viva", "mid_term", "term_final", "assignment", "practice", "other"],
                     required=False,
                 ),
                 ToolParameter(

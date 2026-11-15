@@ -180,7 +180,7 @@ async def get_workspace_group(workspace_id: str, slug: str) -> dict:
 async def patch_workspace_group(workspace_id: str, slug: str, payload: dict) -> dict:
     root = _workspace_root(workspace_id)
     # Only pass fields that were actually provided
-    allowed = {"name", "type", "date", "status", "syllabus", "topics"}
+    allowed = {"name", "type", "date", "status", "syllabus", "topics", "lessons"}
     fields = {k: v for k, v in payload.items() if k in allowed}
     try:
         group = await asyncio.to_thread(update_group, root, slug, **fields)

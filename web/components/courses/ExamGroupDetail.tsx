@@ -6,7 +6,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
+  BookOpen,
   Check,
+  ExternalLink,
   GraduationCap,
   Loader2,
   Plus,
@@ -49,6 +51,7 @@ const EXAM_TYPES: { value: ExamType; label: string }[] = [
   { value: "mid_term", label: "Mid-Term" },
   { value: "term_final", label: "Term Final" },
   { value: "assignment", label: "Assignment" },
+  { value: "practice", label: "Practice" },
   { value: "other", label: "Other" },
 ];
 
@@ -343,7 +346,9 @@ export function ExamGroupDetail({
   // Study for this exam
   const handleStudyForExam = () => {
     if (!group) return;
-    const prompt = group.date
+    const prompt = group.type === "practice"
+      ? `I'm starting ${group.name}. What should I read first, and which problem do I start with?`
+      : group.date
       ? `I have ${group.name} on ${group.date}. Help me prepare.`
       : `I have ${group.name}. Help me prepare.`;
     setPendingPrompt(prompt);
@@ -380,6 +385,16 @@ export function ExamGroupDetail({
   const totalTopics = group.topics?.length ?? 0;
   const knownTopics =
     group.topics?.filter((t) => t.status === "known").length ?? 0;
+  const practice = group.type === "practice";
+  const learningTopics =
+    group.topics?.filter((t) => t.status === "learning").length ?? 0;
+  const knownPercent = totalTopics ? Math.round((knownTopics / totalTopics) * 100) : 0;
+  const learningPercent = totalTopics
+    ? Math.round((learningTopics / totalTopics) * 100)
+    : 0;
+  const statusLabels: Record<TopicStatus, string> = practice
+    ? { todo: "To do", learning: "Re-solve", known: "Solved", skipped: "Skipped" }
+    : { todo: "To Do", learning: "Learning", known: "Known", skipped: "Skipped" };
 
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6">
@@ -423,7 +438,7 @@ export function ExamGroupDetail({
               onClick={handleStudyForExam}
               className="text-xs"
             >
-              Study for this exam
+              {practice ? "Ask the tutor" : "Study for this exam"}
             </Button>
 
             <Button
@@ -467,7 +482,9 @@ export function ExamGroupDetail({
         </div>
 
         {/* Editable Metadata Row */}
-        <div className="grid grid-cols-1 gap-2.5 pt-2 sm:grid-cols-3">
+        <div
+          className={`grid grid-cols-1 gap-2.5 pt-2 sm:grid-cols-3 ${practice ? "hidden" : ""}`}
+        >
           <div>
             <label className="mb-1 block text-[11px] font-medium text-[var(--muted-foreground)]">
               Type
@@ -519,8 +536,18 @@ export function ExamGroupDetail({
       {/* Tutor Hint Line */}
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-blue-500/20 bg-blue-50/50 px-4 py-3 text-xs text-blue-900 dark:bg-blue-950/20 dark:text-blue-200">
         <p className="flex-1">
-          💡 Every chat in this course can read these files. Tell the tutor
-          e.g. &ldquo;I have {group.name}{' '}tomorrow&rdquo;.
+          {practice ? (
+            <>
+              💡 Read the lessons, solve each problem on LeetCode, then tell the
+              tutor how it went (&ldquo;solved alone&rdquo;, &ldquo;needed a
+              hint&rdquo;, &ldquo;I&rsquo;m stuck&rdquo;). It updates your progress.
+            </>
+          ) : (
+            <>
+              💡 Every chat in this course can read these files. Tell the tutor
+              e.g. &ldquo;I have {group.name}{' '}tomorrow&rdquo;.
+            </>
+          )}
         </p>
         <button
           type="button"
@@ -531,15 +558,50 @@ export function ExamGroupDetail({
         </button>
       </div>
 
+      {/* Reading list (practice groups) */}
+      {(group.lessons?.length ?? 0) > 0 && (
+        <div className="flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+          <div>
+            <h3 className="text-sm font-semibold text-[var(--foreground)]">
+              Read first
+            </h3>
+            <p className="text-xs text-[var(--muted-foreground)]">
+              Lessons for this pattern. They open in your browser.
+            </p>
+          </div>
+          <div className="flex flex-col divide-y divide-[var(--border)]/30 rounded-lg border border-[var(--border)] bg-[var(--background)]">
+            {(group.lessons ?? []).map((lesson) => (
+              <a
+                key={lesson.url}
+                href={lesson.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--muted)]/50"
+              >
+                <BookOpen size={13} className="shrink-0 text-[var(--muted-foreground)]" />
+                <span className="min-w-0 flex-1 truncate">{lesson.title}</span>
+                <ExternalLink size={12} className="shrink-0 text-[var(--muted-foreground)]" />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Syllabus Section */}
-      <div className="flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+      <div
+        className={`flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm ${
+          practice ? "order-last" : ""
+        }`}
+      >
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold text-[var(--foreground)]">
-              Syllabus & Scope
+              {practice ? "Notes" : "Syllabus & Scope"}
             </h3>
             <p className="text-xs text-[var(--muted-foreground)]">
-              The syllabus markdown stored in EXAM.md.
+              {practice
+                ? "Plain text the tutor reads with this group (EXAM.md)."
+                : "The syllabus markdown stored in EXAM.md."}
             </p>
           </div>
           <Button
@@ -568,10 +630,12 @@ export function ExamGroupDetail({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h3 className="text-sm font-semibold text-[var(--foreground)]">
-              Topic Progress
+              {practice ? "Problems" : "Topic Progress"}
             </h3>
             <p className="text-xs text-[var(--muted-foreground)]">
-              Track mastery for this exam: {knownTopics}/{totalTopics} known
+              {practice
+                ? `${knownTopics}/${totalTopics} solved · ${learningTopics} to re-solve`
+                : `Track mastery for this exam: ${knownTopics}/${totalTopics} known`}
             </p>
           </div>
           {savingTopics && (
@@ -581,8 +645,15 @@ export function ExamGroupDetail({
           )}
         </div>
 
+        {practice && totalTopics > 0 && (
+          <div className="flex h-2 w-full overflow-hidden rounded-full bg-[var(--muted)]">
+            <div className="h-full bg-emerald-500" style={{ width: `${knownPercent}%` }} />
+            <div className="h-full bg-blue-500" style={{ width: `${learningPercent}%` }} />
+          </div>
+        )}
+
         {/* Add topic form */}
-        <div className="flex gap-2">
+        <div className={`flex gap-2 ${practice ? "hidden" : ""}`}>
           <input
             type="text"
             value={newTopicTitle}
@@ -619,13 +690,28 @@ export function ExamGroupDetail({
             group.topics.map((topic, idx) => (
               <div
                 key={idx}
-                className="flex items-center justify-between gap-3 px-3 py-2 text-xs"
+                className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 px-3 py-2 text-xs"
               >
-                <span className="truncate font-medium text-[var(--foreground)]">
+                <span className="min-w-[10rem] flex-1 truncate font-medium text-[var(--foreground)]">
+                  {practice && (
+                    <span className="mr-2 text-[var(--muted-foreground)]">{idx + 1}.</span>
+                  )}
                   {topic.title}
                 </span>
 
                 <div className="flex shrink-0 items-center gap-2">
+                  {(topic.links ?? []).map((link) => (
+                    <a
+                      key={link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-0.5 text-[11px] font-medium text-[var(--foreground)] hover:bg-[var(--muted)]"
+                    >
+                      {link.label}
+                      <ExternalLink size={10} />
+                    </a>
+                  ))}
                   <select
                     value={topic.status}
                     onChange={(e) =>
@@ -638,15 +724,16 @@ export function ExamGroupDetail({
                       TOPIC_STATUS_STYLES[topic.status] || ""
                     }`}
                   >
-                    <option value="todo">To Do</option>
-                    <option value="learning">Learning</option>
-                    <option value="known">Known</option>
-                    <option value="skipped">Skipped</option>
+                    <option value="todo">{statusLabels.todo}</option>
+                    <option value="learning">{statusLabels.learning}</option>
+                    <option value="known">{statusLabels.known}</option>
+                    <option value="skipped">{statusLabels.skipped}</option>
                   </select>
 
                   <button
                     type="button"
                     onClick={() => void handleRemoveTopic(idx)}
+                    hidden={practice}
                     className="rounded p-1 text-[var(--muted-foreground)] hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
                     title="Remove topic"
                   >
@@ -660,7 +747,11 @@ export function ExamGroupDetail({
       </div>
 
       {/* Files & Folder Tree */}
-      <div className="flex flex-col gap-3 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+      <div
+        className={`flex flex-col gap-3 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm ${
+          practice ? "hidden" : ""
+        }`}
+      >
         <div>
           <h3 className="text-sm font-semibold text-[var(--foreground)]">
             Exam Resources & Files

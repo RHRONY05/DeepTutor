@@ -117,3 +117,7 @@ pattern of the AM-300 sheet (type `other`, no date), its topics are the problems
 studied or hinted, re-solve due / `known` / `skipped`), its syllabus lists the "Read first" lessons and
 LeetCode + lesson links. The `dsa-tutor` builtin skill teaches (hint ladder, slow→fast approaches, dry run,
 trigger) and updates topics; the course instructions tell the tutor not to use `exam-prep` there.
+Practice groups (`type: practice`) also carry `lessons: [{title, url}]` and per-topic
+`links: [{label, url}]`; the Courses UI renders them as a reading list and LeetCode/Lesson buttons,
+labels statuses To do / Re-solve / Solved / Skipped, and shows a course-wide solved bar.
+

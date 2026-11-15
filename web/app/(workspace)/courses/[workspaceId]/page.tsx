@@ -152,7 +152,9 @@ export default function CourseWorkspacePage() {
               </h1>
               <p className="text-xs text-[var(--muted-foreground)]">
                 Course workspace · {groups.length}{" "}
-                {groups.length === 1 ? "exam group" : "exam groups"}
+                {groups.length > 0 && groups.every((g) => g.type === "practice")
+                  ? groups.length === 1 ? "pattern" : "patterns"
+                  : groups.length === 1 ? "exam group" : "exam groups"}
               </p>
             </div>
           </div>
@@ -166,7 +168,7 @@ export default function CourseWorkspacePage() {
               onClick={() => setCreateOpen(true)}
               className="text-xs"
             >
-              New exam group
+              New group
             </Button>
           </div>
         </div>

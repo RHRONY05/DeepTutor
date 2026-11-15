@@ -109,3 +109,9 @@ Open: V14 per-course memory (deferred), Courses UI i18n, YouTube duration often 
 - Tests: tests/fork 126 ✅ (+4 in `test_dsa_course.py`), skill service tests ✅.
 - Open: re-solve dates (statuses only for now), a "due today" view, a step-by-step algorithm player,
   PDF/image text for course files.
+- Follow-up (same day): the DSA groups used the exam screen, so lessons and links were only raw text.
+  Added a `practice` group type: `lessons` reading list and `links` per topic (http(s) only; a status
+  update without links keeps them), Courses UI shows "Read first" links, LeetCode/Lesson buttons per
+  problem, solved/re-solve bars per pattern and for the whole course (300 problems). Setup script now
+  refreshes existing groups and keeps progress. tests/fork 133 ✅ (+7 `test_practice_groups.py`), tsc ✅.
+

@@ -40,18 +40,45 @@ function formatExamDate(dateStr: string): string {
   return formatted;
 }
 
+function countTopics(groups: ExamGroup[]) {
+  // Count problems (topics with a LeetCode link) when there are any, so reading
+  // lists such as "Before you start" don't inflate the total.
+  const all = groups.flatMap((group) => group.topics ?? []);
+  const problems = all.filter((topic) =>
+    (topic.links ?? []).some((link) => link.label === "LeetCode"),
+  );
+  let total = 0;
+  let known = 0;
+  let learning = 0;
+  for (const topic of problems.length ? problems : all) {
+    total += 1;
+    if (topic.status === "known") known += 1;
+    else if (topic.status === "learning") learning += 1;
+  }
+  return { total, known, learning };
+}
+
 export function ExamGroupList({
   groups,
   selectedSlug,
   onSelectSlug,
   onOpenCreate,
 }: ExamGroupListProps) {
+  // A course whose groups are all practice tracks (e.g. DSA patterns) reads as a sheet.
+  const isPractice =
+    groups.length > 0 && groups.every((group) => group.type === "practice");
+  const overall = countTopics(groups);
+  const overallKnown =
+    overall.total > 0 ? Math.round((overall.known / overall.total) * 100) : 0;
+  const overallLearning =
+    overall.total > 0 ? Math.round((overall.learning / overall.total) * 100) : 0;
+
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-semibold text-[var(--foreground)]">
-            Exam Groups
+            {isPractice ? "Patterns" : "Exam Groups"}
           </h2>
           <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
             {groups.length}
@@ -68,6 +95,29 @@ export function ExamGroupList({
           New group
         </Button>
       </div>
+
+      {isPractice && (
+        <div className="border-b border-[var(--border)] px-4 py-3">
+          <div className="flex items-baseline justify-between text-xs">
+            <span className="font-semibold text-[var(--foreground)]">
+              {overall.known} / {overall.total} solved
+            </span>
+            <span className="text-[var(--muted-foreground)]">
+              {overall.learning} to re-solve · {overallKnown}%
+            </span>
+          </div>
+          <div className="mt-1.5 flex h-2 w-full overflow-hidden rounded-full bg-[var(--muted)]">
+            <div
+              className="h-full bg-emerald-500 transition-all duration-300"
+              style={{ width: `${overallKnown}%` }}
+            />
+            <div
+              className="h-full bg-blue-500 transition-all duration-300"
+              style={{ width: `${overallLearning}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="flex-1 overflow-y-auto p-2">
         {groups.length === 0 ? (
@@ -94,6 +144,14 @@ export function ExamGroupList({
                 totalTopics > 0
                   ? Math.round((knownTopics / totalTopics) * 100)
                   : 0;
+              const practice = group.type === "practice";
+              const learningTopics = practice
+                ? (group.topics ?? []).filter((t) => t.status === "learning").length
+                : 0;
+              const learningPercent =
+                totalTopics > 0
+                  ? Math.round((learningTopics / totalTopics) * 100)
+                  : 0;
 
               return (
                 <button
@@ -110,7 +168,7 @@ export function ExamGroupList({
                     <span className="truncate text-sm font-semibold text-[var(--foreground)]">
                       {group.name}
                     </span>
-                    <ExamStatusBadge status={group.status} />
+                    {!practice && <ExamStatusBadge status={group.status} />}
                   </div>
 
                   <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
@@ -126,26 +184,40 @@ export function ExamGroupList({
                   {totalTopics > 0 && (
                     <div className="mt-2.5 w-full">
                       <div className="flex items-center justify-between text-[11px] text-[var(--muted-foreground)]">
-                        <span>Topics</span>
+                        <span>{practice ? "Problems" : "Topics"}</span>
                         <span>
-                          {knownTopics}/{totalTopics} known ({percent}%)
+                          {practice
+                            ? `${knownTopics}/${totalTopics} solved${
+                                learningTopics ? ` · ${learningTopics} to re-solve` : ""
+                              }`
+                            : `${knownTopics}/${totalTopics} known (${percent}%)`}
                         </span>
                       </div>
-                      <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[var(--muted)]">
+                      <div className="mt-1 flex h-1.5 w-full overflow-hidden rounded-full bg-[var(--muted)]">
                         <div
-                          className="h-full rounded-full bg-[var(--primary)] transition-all duration-300"
+                          className={`h-full transition-all duration-300 ${
+                            practice ? "bg-emerald-500" : "rounded-full bg-[var(--primary)]"
+                          }`}
                           style={{ width: `${percent}%` }}
                         />
+                        {practice && (
+                          <div
+                            className="h-full bg-blue-500 transition-all duration-300"
+                            style={{ width: `${learningPercent}%` }}
+                          />
+                        )}
                       </div>
                     </div>
                   )}
 
-                  <div className="mt-2 flex items-center justify-between text-[11px] text-[var(--muted-foreground)]/70">
-                    <span>
-                      {group.file_count}{" "}
-                      {group.file_count === 1 ? "file" : "files"}
-                    </span>
-                  </div>
+                  {!(practice && group.file_count === 0) && (
+                    <div className="mt-2 flex items-center justify-between text-[11px] text-[var(--muted-foreground)]/70">
+                      <span>
+                        {group.file_count}{" "}
+                        {group.file_count === 1 ? "file" : "files"}
+                      </span>
+                    </div>
+                  )}
                 </button>
               );
             })}

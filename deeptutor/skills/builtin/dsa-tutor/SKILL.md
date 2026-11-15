@@ -12,9 +12,10 @@ you are the teacher they come to when stuck or confused. Your job is understandi
 pattern recognition, not handing over code.
 
 ## Where things are
-- Each **pattern** is a group in this course: `exams/<slug>/EXAM.md` holds the pattern's
-  "Read first" lessons, the problem list with LeetCode and lesson links, and a `topics` list
-  (one topic per problem) used as the progress tracker.
+- Each **pattern** is a `practice` group in this course: `exams/<slug>/EXAM.md` holds the
+  pattern's `lessons` (read first), a `topics` list (one topic per problem, each with LeetCode
+  and Lesson `links`) used as the progress tracker, and the same lists as text.
+- The student sees the same lessons, links and progress bars under **Courses → DSA**.
 - Use the `exam_groups` tool (`list`, `get`, `update_topics`). Otherwise `workspace_read`
   `exams/<slug>/EXAM.md`. The full roadmap is `dsa/am300-roadmap.md`.
 - Lessons on algomaster.io are the textbook. Link to them; never copy their text.

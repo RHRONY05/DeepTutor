@@ -12,7 +12,10 @@ EXAM.md frontmatter schema::
     type: class_test | quiz | viva | mid_term | term_final | assignment | other
     date: YYYY-MM-DD | ""
     status: planned | preparing | done
-    topics: [{title: str, status: todo|learning|known|skipped}]
+    topics: [{title: str, status: todo|learning|known|skipped, links?: [{label, url}]}]
+    lessons: [{title: str, url: str}]   — optional reading list (practice groups)
+
+A ``practice`` group is a self-study track (e.g. one DSA pattern) instead of an exam.
 """
 
 from __future__ import annotations
@@ -39,17 +42,39 @@ MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
 MAX_SLUG_LEN = 48
 
 VALID_TYPES = frozenset(
-    {"class_test", "quiz", "viva", "mid_term", "term_final", "assignment", "other"}
+    {"class_test", "quiz", "viva", "mid_term", "term_final", "assignment", "practice", "other"}
 )
 VALID_STATUSES = frozenset({"planned", "preparing", "done"})
 VALID_TOPIC_STATUSES = frozenset({"todo", "learning", "known", "skipped"})
+MAX_LINKS = 8
+MAX_LESSONS = 50
+_URL_RE = re.compile(r"^https?://[^\s]+$")
 
 # Windows reserved device names (case-insensitive, without extension)
 _WINDOWS_RESERVED = frozenset(
     {
-        "CON", "PRN", "AUX", "NUL",
-        "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
-        "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+        "CON",
+        "PRN",
+        "AUX",
+        "NUL",
+        "COM1",
+        "COM2",
+        "COM3",
+        "COM4",
+        "COM5",
+        "COM6",
+        "COM7",
+        "COM8",
+        "COM9",
+        "LPT1",
+        "LPT2",
+        "LPT3",
+        "LPT4",
+        "LPT5",
+        "LPT6",
+        "LPT7",
+        "LPT8",
+        "LPT9",
     }
 )
 
@@ -114,7 +139,7 @@ def _unique_slug(root: Path, base: str) -> str:
         return base
     n = 2
     while True:
-        candidate = f"{base[:MAX_SLUG_LEN - len(str(n)) - 1]}-{n}"
+        candidate = f"{base[: MAX_SLUG_LEN - len(str(n)) - 1]}-{n}"
         if candidate not in taken:
             return candidate
         n += 1
@@ -163,6 +188,9 @@ def _group_dict(root: Path, slug: str) -> dict[str, Any]:
     topics: list[dict[str, Any]] = fm.get("topics") or []
     if not isinstance(topics, list):
         topics = []
+    lessons = fm.get("lessons") or []
+    if not isinstance(lessons, list):
+        lessons = []
 
     # progress
     total = len(topics)
@@ -188,6 +216,7 @@ def _group_dict(root: Path, slug: str) -> dict[str, Any]:
         "status": status,
         "syllabus": body,
         "topics": topics,
+        "lessons": lessons,
         "progress": {"known": known, "total": total},
         "file_count": file_count,
         "updated_at": updated_at,
@@ -233,7 +262,47 @@ def _validate_topics(topics: list[Any]) -> list[dict[str, Any]]:
                 f"Invalid topic status {ts!r}. Must be one of: "
                 f"{', '.join(sorted(VALID_TOPIC_STATUSES))}."
             )
-        out.append({"title": str(item.get("title") or ""), "status": ts})
+        topic: dict[str, Any] = {"title": str(item.get("title") or ""), "status": ts}
+        if "links" in item:
+            links = _validate_links(item.get("links"))
+            if links:
+                topic["links"] = links
+        out.append(topic)
+    return out
+
+
+def _checked_url(value: Any) -> str:
+    url = str(value or "").strip()
+    if not _URL_RE.match(url):
+        raise ExamGroupError(f"Links must be http(s) URLs, got {url!r}.")
+    return url
+
+
+def _validate_links(raw: Any) -> list[dict[str, str]]:
+    """Return a topic's links as [{label, url}]; only http(s) URLs are accepted."""
+    if raw is None:
+        return []
+    if not isinstance(raw, list) or len(raw) > MAX_LINKS:
+        raise ExamGroupError(f"'links' must be a list of at most {MAX_LINKS} items.")
+    out: list[dict[str, str]] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            raise ExamGroupError("Each link must be a dict with 'label' and 'url'.")
+        label = str(item.get("label") or "Link").strip()[:60] or "Link"
+        out.append({"label": label, "url": _checked_url(item.get("url"))})
+    return out
+
+
+def _validate_lessons(raw: Any) -> list[dict[str, str]]:
+    """Return a group's reading list as [{title, url}]."""
+    if not isinstance(raw, list) or len(raw) > MAX_LESSONS:
+        raise ExamGroupError(f"'lessons' must be a list of at most {MAX_LESSONS} items.")
+    out: list[dict[str, str]] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            raise ExamGroupError("Each lesson must be a dict with 'title' and 'url'.")
+        title = str(item.get("title") or "Lesson").strip()[:200] or "Lesson"
+        out.append({"title": title, "url": _checked_url(item.get("url"))})
     return out
 
 
@@ -353,7 +422,9 @@ def create_group(
 def update_group(root: Path, slug: str, **fields: Any) -> dict[str, Any]:
     """Update allowed fields on an existing group.
 
-    Allowed field keys: name, type, date, status, syllabus, topics.
+    Allowed field keys: name, type, date, status, syllabus, topics, lessons.
+    A topic sent without ``links`` keeps the links of the existing topic with the same title,
+    so a status update (by the tutor or the UI) never drops a problem's links.
     """
     gdir = _group_dir(root, slug)
     if not gdir.exists():
@@ -387,7 +458,21 @@ def update_group(root: Path, slug: str, **fields: Any) -> dict[str, Any]:
         raw = fields["topics"]
         if not isinstance(raw, list):
             raise ExamGroupError("'topics' must be a list.")
-        fm["topics"] = _validate_topics(raw)
+        topics = _validate_topics(raw)
+        old_links = {
+            str(t.get("title") or "").strip().lower(): t["links"]
+            for t in fm.get("topics") or []
+            if isinstance(t, dict) and t.get("links")
+        }
+        for topic in topics:
+            if "links" not in topic:
+                links = old_links.get(topic["title"].strip().lower())
+                if links:
+                    topic["links"] = links
+        fm["topics"] = topics
+
+    if "lessons" in fields:
+        fm["lessons"] = _validate_lessons(fields["lessons"])
 
     _write_exam_md(exam_path, fm, body)
     return _group_dict(root, slug)
@@ -403,9 +488,7 @@ def delete_group(root: Path, slug: str, force: bool = False) -> None:
     if not gdir.exists() or not gdir.is_dir():
         raise ExamGroupError(f"Exam group '{slug}' not found.")
 
-    extra: list[Path] = [
-        p for p in gdir.rglob("*") if p.is_file() and p.name != EXAM_FILE
-    ]
+    extra: list[Path] = [p for p in gdir.rglob("*") if p.is_file() and p.name != EXAM_FILE]
     if extra and not force:
         raise ExamGroupError(
             f"Exam group '{slug}' contains {len(extra)} file(s) besides {EXAM_FILE}. "

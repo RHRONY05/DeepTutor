@@ -79,6 +79,55 @@ def start_syllabus(items: list[dict]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def group_specs(sheet: dict) -> list[dict]:
+    """One spec per group: name, syllabus, lessons [{title, url}], topics with links."""
+    start = sheet["before_you_start"]
+    specs = [
+        {
+            "name": "00 · Before you start",
+            "syllabus": start_syllabus(start),
+            "lessons": [{"title": r["title"], "url": r["url"]} for r in start],
+            "topics": [
+                {
+                    "title": r["title"],
+                    "status": "todo",
+                    "links": [{"label": "Lesson", "url": r["url"]}],
+                }
+                for r in start
+            ],
+        }
+    ]
+    for i, pattern in enumerate(sheet["patterns"], 1):
+        lessons = [{"title": r["title"], "url": r["url"]} for r in pattern["read_first"]]
+        if pattern.get("video"):
+            lessons.append({"title": "Video intro (YouTube)", "url": pattern["video"]})
+        specs.append(
+            {
+                "name": f"{i:02d} · {pattern['name']}",
+                "syllabus": group_syllabus(pattern),
+                "lessons": lessons,
+                "topics": [
+                    {
+                        "title": f"{p['title']} ({p['difficulty']})",
+                        "status": "todo",
+                        "links": [
+                            {"label": "LeetCode", "url": p["leetcode"]},
+                            {"label": "Lesson", "url": p["lesson"]},
+                        ],
+                    }
+                    for p in pattern["problems"]
+                ],
+            }
+        )
+    return specs
+
+
+def keep_progress(topics: list[dict], old_topics: list[dict]) -> list[dict]:
+    """Fresh topics (titles, links) with the statuses already recorded."""
+    status = {str(t.get("title", "")).lower(): t.get("status") for t in old_topics}
+    return [{**t, "status": status.get(t["title"].lower()) or t["status"]} for t in topics]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--api", default="http://127.0.0.1:8001")
@@ -140,44 +189,38 @@ def main() -> int:
         print(f"Updated persona {PERSONA}")
     call(api, "PUT", f"/api/courses/{ws}/settings", {"default_persona": PERSONA})
 
-    # 3. Pattern groups
-    existing = {g["name"] for g in call(api, "GET", f"/api/courses/{ws}/groups")["groups"]}
-    wanted = [
-        (
-            "00 · Before you start",
-            start_syllabus(sheet["before_you_start"]),
-            [{"title": r["title"], "status": "todo"} for r in sheet["before_you_start"]],
-        )
-    ]
-    for i, pattern in enumerate(sheet["patterns"], 1):
-        wanted.append(
-            (
-                f"{i:02d} · {pattern['name']}",
-                group_syllabus(pattern),
-                [
-                    {"title": f"{p['title']} ({p['difficulty']})", "status": "todo"}
-                    for p in pattern["problems"]
-                ],
-            )
-        )
-    created = 0
-    for name, syllabus, topics in wanted:
-        if name in existing:
-            continue
-        group = call(
-            api,
-            "POST",
-            f"/api/courses/{ws}/groups",
-            {"name": name, "type": "other", "date": "", "syllabus": syllabus},
-        )["group"]
+    # 3. Pattern groups (practice type: reading list + problems with links)
+    existing = {g["name"]: g for g in call(api, "GET", f"/api/courses/{ws}/groups")["groups"]}
+    created = updated = 0
+    for spec in group_specs(sheet):
+        old = existing.get(spec["name"])
+        if old is None:
+            old = call(
+                api,
+                "POST",
+                f"/api/courses/{ws}/groups",
+                {
+                    "name": spec["name"],
+                    "type": "practice",
+                    "date": "",
+                    "syllabus": spec["syllabus"],
+                },
+            )["group"]
+            created += 1
+        else:
+            updated += 1
         call(
             api,
             "PATCH",
-            f"/api/courses/{ws}/groups/{urllib.parse.quote(group['slug'])}",
-            {"topics": topics},
+            f"/api/courses/{ws}/groups/{urllib.parse.quote(old['slug'])}",
+            {
+                "type": "practice",
+                "syllabus": spec["syllabus"],
+                "lessons": spec["lessons"],
+                "topics": keep_progress(spec["topics"], old.get("topics") or []),
+            },
         )
-        created += 1
-    print(f"Groups: {created} created, {len(wanted) - created} already there")
+    print(f"Groups: {created} created, {updated} refreshed (progress kept)")
 
     # 4. Roadmap file in the course folder
     roadmap = DATA / "am300-roadmap.md"
